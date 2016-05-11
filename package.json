@@ -1,12 +1,9 @@
 {
-  "name": "esrijs4-redux",
+  "name": "arcgis-react-redux-legend",
   "version": "1.0.0",
   "description": "",
   "main": "dojoConfig.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Rene Rubalcava <rrubalcava@odoe.net>",
+  "author": "Dave Timmins <dwtimmins@outlook.com>",
   "license": "MIT",
   "devDependencies": {
     "babel-plugin-transform-es2015-modules-amd": "^6.3.13",
