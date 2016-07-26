@@ -44,7 +44,7 @@ class MapUi extends Component {
         })
 
         imageLyr.then(function() {
-            view.goTo(infraLyr.fullExtent);
+            view.goTo(imageLyr.fullExtent);
         })
 
         view.then(function() {
