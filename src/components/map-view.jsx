@@ -29,13 +29,13 @@ class MapUi extends Component {
 
         const { mapId, setInitialLegend } = this.props
 
-        const permitsLyr = new MapImageLayer({
-            url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/PoolPermits/MapServer"
+        const infraLyr = new MapImageLayer({
+            url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Energy/Infrastructure/MapServer"
         })
 
         const map = new Map({
             basemap: "dark-gray",
-            layers: [permitsLyr]
+            layers: [infraLyr]
         })
 
         const view = new SceneView({
@@ -43,8 +43,8 @@ class MapUi extends Component {
             map: map
         })
 
-        permitsLyr.then(function() {
-            view.goTo(permitsLyr.fullExtent);
+        infraLyr.then(function() {
+            view.goTo(infraLyr.fullExtent);
         })
 
         view.then(function() {

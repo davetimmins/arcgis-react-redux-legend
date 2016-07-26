@@ -2,7 +2,7 @@
 import { connect } from 'react-redux'
 import { fetchLegend, toggleNodeExpanded, toggleNodeVisible } from 'app/actions/map-legend-actions'
 
-import { Input } from 'react-bootstrap'
+import { Checkbox } from 'react-bootstrap'
 
 const mapStateToProps = (state) => {
     return {
@@ -99,7 +99,7 @@ class MapLegend extends Component {
 
             let subNodeExpander = item.subLayerLegendData === null || item.subLayerLegendData == undefined ? '' : item.expanded ? <i onClick={() => toggleNodeExpanded(item.id, mapId)} className="fa fa-caret-down click-legend-node"></i> : <i onClick={() => toggleNodeExpanded(item.id, mapId)} className="fa fa-caret-right click-legend-node"></i>
 
-            let subNodeCheckbox = item.visible ? <div className='inline-block-display bottom-margin'><Input type='checkbox' onChange={() => toggleNodeVisible(item.id, mapId)} checked label={item.subLayerName} /></div> : <div className='inline-block-display bottom-margin'><Input type='checkbox' onChange={() => toggleNodeVisible(item.id, mapId)} label={item.subLayerName} /></div>
+            let subNodeCheckbox = item.visible ? <div className='inline-block-display bottom-margin'><Checkbox onChange={() => toggleNodeVisible(item.id, mapId)} checked>{item.subLayerName}</Checkbox></div> : <div className='inline-block-display bottom-margin'><Checkbox onChange={() => toggleNodeVisible(item.id, mapId)}>{item.subLayerName}</Checkbox></div>
 
             return <div key={item.id} style={marginStyle}>{subNodeExpander}{subNodeCheckbox}{subLayerLegendData}</div>
             }
@@ -112,7 +112,7 @@ class MapLegend extends Component {
 
             let topNodeExpander = item.legendLayers === null || item.legendLayers == undefined ? '' : item.expanded ? <i onClick={() => toggleNodeExpanded(item.id, mapId)} className="fa fa-caret-down click-legend-node"></i> : <i onClick={() => toggleNodeExpanded(item.id, mapId)} className="fa fa-caret-right click-legend-node"></i>
 
-            let nodeCheckbox = item.visible ? <div className='inline-block-display bottom-margin'><Input type='checkbox' onChange={() => toggleNodeVisible(item.id, mapId)} checked label={item.layerName} /></div> : <div className='inline-block-display bottom-margin'><Input type='checkbox' onChange={() => toggleNodeVisible(item.id, mapId)} label={item.layerName} /></div>
+            let nodeCheckbox = item.visible ? <div className='inline-block-display bottom-margin'><Checkbox onChange={() => toggleNodeVisible(item.id, mapId)} checked>{item.layerName}</Checkbox></div> : <div className='inline-block-display bottom-margin'><Checkbox onChange={() => toggleNodeVisible(item.id, mapId)}>{item.layerName}</Checkbox></div>
 
             return <div key={item.id} style={marginStyle}>{topNodeExpander}{nodeCheckbox}{sublayers}</div>
             }

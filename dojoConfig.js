@@ -31,7 +31,7 @@ window.dojoConfig = {
       main: 'redux-thunk.min'
   }, {
     name: 'app',
-    location: locationPath + '/dist',
+    location: locationPath + 'dist',
     main: 'main'
   }]
 };
