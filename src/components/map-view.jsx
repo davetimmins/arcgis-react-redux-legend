@@ -29,13 +29,13 @@ class MapUi extends Component {
 
         const { mapId, setInitialLegend } = this.props
 
-        const infraLyr = new MapImageLayer({
-            url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Energy/Infrastructure/MapServer"
+        const imageLyr = new MapImageLayer({
+            url: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Tapestry/MapServer"
         })
 
         const map = new Map({
             basemap: "dark-gray",
-            layers: [infraLyr]
+            layers: [imageLyr]
         })
 
         const view = new SceneView({
@@ -43,7 +43,7 @@ class MapUi extends Component {
             map: map
         })
 
-        infraLyr.then(function() {
+        imageLyr.then(function() {
             view.goTo(infraLyr.fullExtent);
         })
 
