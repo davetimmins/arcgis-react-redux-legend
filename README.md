@@ -8,4 +8,4 @@ Basic legend/TOC control for the ArcGIS JS API V4 that uses React and Redux
 
 ### Run locally
 
-grab this repo (fork / download) then run `npm install` wait a while and then get running with `npm start`.
+grab this repo (fork / download) then run `npm install` wait a while and then get running with `npm run setup` then `npm start`.

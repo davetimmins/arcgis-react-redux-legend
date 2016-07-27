@@ -21,4 +21,21 @@ gulp.task('watch', function(){
   ], ['react']);
 });
 
+gulp.task('copy-vendor', function() {
+  // the base option sets the relative root for the set of files,
+  // preserving the folder structure
+  gulp.src([
+    'node_modules/react/**/*',
+    'node_modules/react-dom/**/*',
+    'node_modules/react-bootstrap/**/*',
+    'node_modules/redux/**/*',
+    'node_modules/react-redux/**/*',
+    'node_modules/redux-thunk/**/*',    
+    'node_modules/font-awesome/**/*'
+    ], {
+      base: './node_modules'
+    })
+    .pipe(gulp.dest('vendor'));
+});
+
 gulp.task('default', ['react']);

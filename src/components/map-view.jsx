@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import MapLegend from 'app/components/map-legend'
 
-import { setInitialLegend } from 'app/actions/map-legend-actions'
+import { setCurrentScale, setInitialLegend } from 'app/actions/map-legend-actions'
 
 import Map from "esri/Map"
 import SceneView from "esri/views/SceneView"
@@ -19,6 +19,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setInitialLegend: (view, mapId) => {
             dispatch(setInitialLegend(view, mapId))
+        },
+        setCurrentScale: (currentScale) => {
+            dispatch(setCurrentScale(currentScale))
         }
     }
 }
@@ -27,24 +30,27 @@ class MapUi extends Component {
        
     componentDidMount() {
 
-        const { mapId, setInitialLegend } = this.props
+        const { mapId, setCurrentScale, setInitialLegend } = this.props
 
         const imageLyr = new MapImageLayer({
-            url: "http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Tapestry/MapServer"
+            url: "https://tmservices1.esri.com/arcgis/rest/services/LiveFeeds/Hurricane_Active/MapServer"
         })
 
         const map = new Map({
-            basemap: "dark-gray",
+            basemap: "topo",
             layers: [imageLyr]
         })
 
         const view = new SceneView({
             container: ReactDOM.findDOMNode(this.refs.mapView),
-            map: map
+            map: map,
+            padding: { right: 280 }            
         })
 
         imageLyr.then(function() {
-            view.goTo(imageLyr.fullExtent);
+            view.goTo({
+                center: [130, 0]
+            })
         })
 
         view.then(function() {
@@ -62,6 +68,10 @@ class MapUi extends Component {
                     }
                 })
             }
+
+            view.watch('scale', function(newScale) {
+                setCurrentScale(newScale)
+            })
         })
     }
 

@@ -1,12 +1,18 @@
-﻿import { RESET_LEGEND_IS_FETCHING, REQUEST_LEGEND_DATA, RECEIVE_LEGEND_DATA, SET_INITIAL_LEGEND_DATA, TOGGLE_LEGEND_NODE_EXPANDED, TOGGLE_LEGEND_NODE_VISIBLE } from 'app/actions/map-legend-actions'
+﻿import { SET_CURRENT_SCALE, RESET_LEGEND_IS_FETCHING, REQUEST_LEGEND_DATA, RECEIVE_LEGEND_DATA, SET_INITIAL_LEGEND_DATA, TOGGLE_LEGEND_NODE_EXPANDED, TOGGLE_LEGEND_NODE_VISIBLE } from 'app/actions/map-legend-actions'
 
 export default function mapLegendConfig (state = {
     isFetching: false,
     legends: {},
-    views: {}
+    views: {},
+    currentScale: 0
 }, action) {
     switch (action.type) {
-        
+
+        case SET_CURRENT_SCALE:
+            return Object.assign({}, state, { 
+                currentScale: action.currentScale 
+            }) 
+
         case RESET_LEGEND_IS_FETCHING:
             return Object.assign({}, state, { 
                 isFetching: false 
@@ -44,7 +50,7 @@ export default function mapLegendConfig (state = {
                             subLayerName: lyr.layerName,
                             subLayerMinScale: lyr.minScale,
                             subLayerMaxScale: lyr.maxScale,
-                            subLayerScaleRestricted: lyr.minScale !== 0 && lyr.maxScale !== 0,
+                            subLayerScaleRestricted: lyr.minScale !== 0 || lyr.maxScale !== 0,
                             subLayerLegendData: legendData,
                             visible: leg.subLayersVisible && leg.subLayersVisible != undefined ? leg.subLayersVisible.indexOf(lyr.layerId) > -1 : true,
                             expanded: true,

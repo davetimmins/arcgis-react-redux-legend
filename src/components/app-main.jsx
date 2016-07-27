@@ -5,7 +5,7 @@ import MapUi from 'app/components/map-view'
 class AppMain extends Component {
     
     render() {        
-        return (<div><MapUi mapId={'legend example'} /></div>)
+        return (<div><MapUi mapId={'Legend example'} /></div>)
     }
 }
 

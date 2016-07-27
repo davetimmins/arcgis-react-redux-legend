@@ -1,5 +1,13 @@
 ﻿import esriRequest from 'esri/request'
 
+export const SET_CURRENT_SCALE = 'SET_CURRENT_SCALE'
+export function setCurrentScale(currentScale) {
+    return {
+        type: SET_CURRENT_SCALE,
+        currentScale
+    }
+}
+
 export const RESET_LEGEND_IS_FETCHING = 'RESET_LEGEND_IS_FETCHING'
 function resetLegendIsFetching() {
     return {

@@ -6,7 +6,8 @@ import { Checkbox } from 'react-bootstrap'
 
 const mapStateToProps = (state) => {
     return {
-        legends: state.mapLegendConfig.legends
+        legends: state.mapLegendConfig.legends,
+        currentScale: state.mapLegendConfig.currentScale
     }
 }
 
@@ -62,7 +63,7 @@ class MapLegend extends Component {
 
     render() {
 
-        const { legends, mapId, toggleNodeExpanded, toggleNodeVisible } = this.props
+        const { legends, mapId, currentScale, toggleNodeExpanded, toggleNodeVisible } = this.props
         const legend = legends[mapId]
 
         let nodes = []
@@ -93,16 +94,20 @@ class MapLegend extends Component {
 
         const renderSubNodes = function(item) {
 
-            const marginStyle = { marginLeft: 8 }
+            let marginStyle = { marginLeft: 8, marginTop: 8 }
 
             let subLayerLegendData = item.expanded === true && item.subLayerLegendData !== null && item.subLayerLegendData !== undefined ? item.subLayerLegendData.map(renderSubNodeLegendData) : ''
+
+            if (item.subLayerScaleRestricted === true && item.subLayerMinScale < currentScale || item.subLayerMaxScale > currentScale) {
+                marginStyle.color = '#dcdcdc'
+            }
 
             let subNodeExpander = item.subLayerLegendData === null || item.subLayerLegendData == undefined ? '' : item.expanded ? <i onClick={() => toggleNodeExpanded(item.id, mapId)} className="fa fa-caret-down click-legend-node"></i> : <i onClick={() => toggleNodeExpanded(item.id, mapId)} className="fa fa-caret-right click-legend-node"></i>
 
             let subNodeCheckbox = item.visible ? <div className='inline-block-display bottom-margin'><Checkbox onChange={() => toggleNodeVisible(item.id, mapId)} checked>{item.subLayerName}</Checkbox></div> : <div className='inline-block-display bottom-margin'><Checkbox onChange={() => toggleNodeVisible(item.id, mapId)}>{item.subLayerName}</Checkbox></div>
 
             return <div key={item.id} style={marginStyle}>{subNodeExpander}{subNodeCheckbox}{subLayerLegendData}</div>
-            }
+        }
 
         const renderNodes = function(item) {
 
@@ -115,7 +120,7 @@ class MapLegend extends Component {
             let nodeCheckbox = item.visible ? <div className='inline-block-display bottom-margin'><Checkbox onChange={() => toggleNodeVisible(item.id, mapId)} checked>{item.layerName}</Checkbox></div> : <div className='inline-block-display bottom-margin'><Checkbox onChange={() => toggleNodeVisible(item.id, mapId)}>{item.layerName}</Checkbox></div>
 
             return <div key={item.id} style={marginStyle}>{topNodeExpander}{nodeCheckbox}{sublayers}</div>
-            }
+        }
 
         return (
             <div id='legend'>

@@ -7,27 +7,27 @@ window.dojoConfig = {
   deps: ['app/main'],
   packages: [{
       name: 'react',
-      location: locationPath + 'node_modules/react/dist',
+      location: locationPath + 'vendor/react/dist',
       main: 'react.min'
   }, {
       name: 'react-dom',
-      location: locationPath + 'node_modules/react-dom/dist',
+      location: locationPath + 'vendor/react-dom/dist',
       main: 'react-dom.min'
   }, {
       name: 'react-bootstrap',
-      location: locationPath + 'node_modules/react-bootstrap/dist',
+      location: locationPath + 'vendor/react-bootstrap/dist',
       main: 'react-bootstrap.min'
   }, {
       name: 'redux',
-      location: locationPath + 'node_modules/redux/dist',
+      location: locationPath + 'vendor/redux/dist',
       main: 'redux.min'
   }, {
       name: 'react-redux',
-      location: locationPath + 'node_modules/react-redux/dist',
+      location: locationPath + 'vendor/react-redux/dist',
       main: 'react-redux.min'
   }, {
       name: 'redux-thunk',
-      location: locationPath + 'node_modules/redux-thunk/dist',
+      location: locationPath + 'vendor/redux-thunk/dist',
       main: 'redux-thunk.min'
   }, {
     name: 'app',
