@@ -36,21 +36,3 @@ input, label {
     margin-bottom: 4px;
 }
 
-.click-legend-node {
-    cursor: pointer;
-    margin-right: 4px;
-}
-
-.inline-block-display {
-    display: inline-block;
-}
-
-.bottom-margin {
-    margin-bottom: 8px;
-}
-
-.legend-map {
-    padding: 10px 6px;
-    background-color: #ebebeb;
-    font-weight: bold;
-}

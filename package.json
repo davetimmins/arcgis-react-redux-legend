@@ -1,34 +1,42 @@
 {
   "name": "arcgis-react-redux-legend",
-  "version": "1.0.0",
-  "description": "",
-  "main": "dojoConfig.js",
+  "version": "0.9.0",
+  "description": "Combined legend and layer list control for the Esri JS API V4. Uses React and Redux.",
   "author": "Dave Timmins <dwtimmins@outlook.com>",
   "license": "MIT",
+  "files": [
+    "dist/arcgis-redux-legend.js"
+  ],
   "local-web-server": {
     "port": 8811
   },
   "scripts": {
     "start": "ws",
-    "prestart": "gulp react",
-    "setup": "gulp copy-vendor"
+    "prestart": "webpack -p && cd ./docs && webpack -p",
+    "build": "webpack -p",
+    "prepublish": "webpack -p"
   },
   "devDependencies": {
-    "babel-plugin-transform-es2015-modules-amd": "^6.8.0",
-    "babel-preset-es2015": "^6.9.0",
-    "babel-preset-react": "^6.11.1",
-    "babel-preset-stage-0": "^6.5.0",
-    "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
-    "local-web-server": "^1.2.6"
+    "babel-core": "^6.21.0",
+    "babel-loader": "^6.2.10",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-react-app": "^2.0.1",
+    "babel-preset-stage-0": "^6.16.0",
+    "css-loader": "^0.26.1",
+    "local-web-server": "^1.2.6",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.14.0",
+    "webpack-node-externals": "^1.5.4"
   },
-  "dependencies": {
-    "font-awesome": "^4.6.3",
-    "react": "^15.2.1",
-    "react-bootstrap": "^0.29.5",
-    "react-dom": "^15.2.1",
-    "react-redux": "^4.4.5",
-    "redux": "^3.5.2",
+  "peerDependencies": {
+    "bootstrap": "^3.3.7",
+    "esri-loader": "^0.1.3",
+    "react": "^15.4.2",
+    "react-bootstrap": "^0.30.7",
+    "react-dom": "^15.4.2",
+    "react-redux": "^5.0.2",
+    "redux": "^3.6.0",
     "redux-thunk": "^2.1.0"
   }
 }
