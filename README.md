@@ -2,8 +2,6 @@
  
 Combined legend and layer list control for the ArcGIS JS API V4 that uses React and Redux
  
-[Demo](https://davetimmins.com/arcgis-react-redux-legend/)
-
 ![legend gif](legend.gif)
 
 ### Run locally
