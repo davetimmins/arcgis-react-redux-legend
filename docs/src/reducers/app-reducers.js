@@ -1,5 +1,5 @@
 import {combineReducers} from "redux";
-import {reducer as mapLegendConfig} from "../../../dist/arcgis-redux-legend";
+import {reducer as mapLegendConfig} from "../../../dist/arcgis-react-redux-legend";
 
 const AppReducers = combineReducers({mapLegendConfig});
 

@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import {connect} from "react-redux";
 import * as esriLoader from "esri-loader";
-import {MapLegend,setInitialLegend} from "../../../dist/arcgis-redux-legend";
+import {MapLegend,setInitialLegend} from "../../../dist/arcgis-react-redux-legend";
 
 class MapUi extends React.Component {
   initialState = {view: null};

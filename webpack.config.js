@@ -8,7 +8,7 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, '/dist'),
-    filename: 'arcgis-redux-legend.js',
+    filename: 'arcgis-react-redux-legend.js',
     libraryTarget: 'umd'
   },
   externals: nodeExternals(),
