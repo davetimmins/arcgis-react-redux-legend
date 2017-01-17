@@ -12,12 +12,12 @@ grab this repo (fork / download) then run `npm install` wait a while and then ge
 
 ### Usage
 
-To add to your site first make sure you have the dependencies installed, we asume you are using React, Redux, React Bootstrap and Esri Loader. For the full list refer to the [package.json](https://github.com/davetimmins/arcgis-react-redux-legend/blob/master/package.json) peerDependencies.
+To add to your site first make sure you have the dependencies installed, we assume you are using React, Redux, React Bootstrap and Esri Loader. For the full list refer to the [package.json](https://github.com/davetimmins/arcgis-react-redux-legend/blob/master/package.json) peerDependencies.
 
 Now add the reducer
 
 ```js
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 import {reducer as mapLegendReducer} from "arcgis-react-redux-legend";
 
 const reducer = combineReducers(
@@ -33,12 +33,13 @@ then where you are creating your map control you need to add the MapLegend compo
 import {MapLegend,setInitialLegend} from "arcgis-react-redux-legend";
 
 // bootstrap the Esri API using esri-loader and create your view
-// mapId should be the unique name to identify the map. You can add multiple maps and legends so long as the mapId is unique
+// mapId should be the unique name / id to identify the map. 
+// You can add multiple maps and legends so long as the mapId is unique
 this.props.dispatch(setInitialLegend(view, mapId));
 ```
 
 ```html
-// in your render function, use the ref to pass to the Esri JS API
+// in your render function, use the ref to pass to the Esri JS API when creating the map and view
 <div ref="mapView">
   <MapLegend mapId={mapId} />
 </div>
