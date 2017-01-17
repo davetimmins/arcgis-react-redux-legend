@@ -29,19 +29,19 @@ const reducer = combineReducers(
 
 then where you are creating your map control you need to add the MapLegend component and initialise it 
 
-```html
-// in your render function, use the ref to pass to the Esri JS API
-<div mapId={mapId} ref="mapView">
-  <MapLegend mapId={mapId} />
-</div>
-```
-
 ```js
 import {MapLegend,setInitialLegend} from "arcgis-react-redux-legend";
 
 // bootstrap the Esri API using esri-loader and create your view
 // mapId should be the unique name to identify the map. You can add multiple maps and legends so long as the mapId is unique
 this.props.dispatch(setInitialLegend(view, mapId));
+```
+
+```html
+// in your render function, use the ref to pass to the Esri JS API
+<div ref="mapView">
+  <MapLegend mapId={mapId} />
+</div>
 ```
 
 `setInitialLegend` will listen for your view being ready and also watch the scale changing so that the legend scale dependency updates accordingly.
