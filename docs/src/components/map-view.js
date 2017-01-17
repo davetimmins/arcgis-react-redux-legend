@@ -10,6 +10,7 @@ class MapUi extends React.Component {
   state = this.initialState;
 
   componentWillMount() {
+
     const {mapId, setInitialLegend} = this.props;
 
     if (!esriLoader.isLoaded()) {
@@ -21,14 +22,9 @@ class MapUi extends React.Component {
         }
 
         esriLoader.dojoRequire(
-          [
-            "esri/Map",
-            "esri/views/SceneView",
-            "esri/layers/MapImageLayer",
-            "esri/core/watchUtils",
-            "dojo/on"
-          ],
-          (Map, SceneView, MapImageLayer, watchUtils) => {
+          ["esri/Map", "esri/views/SceneView", "esri/layers/MapImageLayer"],
+          (Map, SceneView, MapImageLayer) => {
+
             const layer1 = new MapImageLayer({
               url: "http://sampleserver6.arcgisonline.com/arcgis/rest/services/RedlandsEmergencyVehicles/MapServer"
             });
@@ -51,10 +47,7 @@ class MapUi extends React.Component {
 
             this.setState({view: view});
 
-            if (!view) {
-              return;
-            }
-
+            // calling this initialises the legend control
             setInitialLegend(view, mapId);
           }
         );
@@ -69,7 +62,7 @@ class MapUi extends React.Component {
     const mapStyle = {width: "100%", height: "100%"};
 
     return (
-      <div style={mapStyle} mapId={mapId} ref="mapView">
+      <div style={mapStyle} ref="mapView">
         <MapLegend mapId={mapId} />
       </div>
     );
@@ -88,4 +81,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapUi)
+export default connect(mapStateToProps, mapDispatchToProps)(MapUi);
