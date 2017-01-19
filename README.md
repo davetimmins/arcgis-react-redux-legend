@@ -12,7 +12,7 @@ grab this repo (fork / download) then run `npm install` wait a while and then ge
 
 ### Usage
 
-To add to your site first make sure you have the dependencies installed, we assume you are using React, Redux, React Bootstrap and Esri Loader. For the full list refer to the [package.json](https://github.com/davetimmins/arcgis-react-redux-legend/blob/master/package.json) peerDependencies.
+To add to your site first make sure you have the dependencies installed, we assume you are using React, Redux and Esri Loader. For the full list refer to the [package.json](https://github.com/davetimmins/arcgis-react-redux-legend/blob/master/package.json) peerDependencies.
 
 Now add the reducer
 

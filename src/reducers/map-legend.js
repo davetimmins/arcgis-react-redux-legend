@@ -13,54 +13,43 @@ const s4 = () => {
 };
 
 const guid = () => {
-  return s4() + s4() + "-" + s4() + "-" + s4() + "-" + s4() + "-" + s4() +
-    s4() +
-    s4();
+  return s4() + s4() + "-" + s4() + "-" + s4() + "-" + s4() + "-" + s4() + s4() + s4();
 };
 
 const updateLayers = (view, legend) => {
-  for (let lyr in legend.items) {
-    if (legend.items.hasOwnProperty(lyr)) {
-      const legendLyr = legend.items[lyr];
 
-      if (legendLyr.alreadyLoaded === true) {
-        const layerFind = view.map.layers.filter(function(lyr) {
-          return lyr.title === legendLyr.layerName ||
-            lyr.id === legendLyr.layerName;
-        });
+  legend.items.forEach((legendLyr) => {
+  
+    if (legendLyr.alreadyLoaded === true) {
+      const layerFind = view.map.layers.filter((lyr) => {
+        return lyr.title === legendLyr.layerName ||
+          lyr.id === legendLyr.layerName;
+      });
 
-        if (layerFind && layerFind.items && layerFind.items.length !== 1) {
-          return null;
-        }
+      if (layerFind && layerFind.items && layerFind.items.length !== 1) {
+        return null;
+      }
 
-        const matchedLayer = layerFind.items[0];
+      const matchedLayer = layerFind.items[0];
 
-        if (
-          legendLyr.visible && legendLyr.subLayersVisible &&
-            matchedLayer.sublayers
-        ) {
-          if (matchedLayer.sublayers) {
-            matchedLayer.sublayers = matchedLayer.sublayers.map(function(
-              subLyr
-            ) {
-              const subLayerFind = legendLyr.subLayersVisible.filter(function(
-                subId
-              ) {
-                return subLyr.id === subId;
-              });
-
-              subLyr.visible = subLayerFind && subLayerFind.length === 1;
-              return subLyr;
+      if (legendLyr.visible && legendLyr.subLayersVisible && matchedLayer.sublayers) {
+        if (matchedLayer.sublayers) {
+          matchedLayer.sublayers = matchedLayer.sublayers.map((subLyr) => {
+            const subLayerFind = legendLyr.subLayersVisible.filter((subId) => {
+              return subLyr.id === subId;
             });
-          }
-        }
 
-        if (matchedLayer.visible !== legendLyr.visible) {
-          matchedLayer.visible = legendLyr.visible;
+            subLyr.visible = subLayerFind && subLayerFind.length === 1;
+            return subLyr;
+          });
         }
       }
-    }
-  }
+
+      if (matchedLayer.visible !== legendLyr.visible) {
+        matchedLayer.visible = legendLyr.visible;
+      }
+    }    
+  });
 };
 
 const initialState = {
@@ -70,183 +59,197 @@ const initialState = {
   currentScale: 0
 };
 
-export default function reducer(state = initialState, action) {
-  switch (action.type) {
-    case SET_CURRENT_SCALE:
-      return Object.assign({}, state, {currentScale: action.currentScale});
+const createReducer = (initialState, reducerMap) => {
+  return (state = initialState, action) => {
+    const reducer = reducerMap[action.type];
 
-    case RESET_LEGEND_IS_FETCHING:
-      return Object.assign({}, state, {isFetching: false});
+    return reducer
+      ? reducer(state, action.payload)
+      : state;
+  };
+}
 
-    case REQUEST_LEGEND_DATA:
-      return Object.assign({}, state, {isFetching: true});
+export default createReducer(initialState, {
 
-    case RECEIVE_LEGEND_DATA:
-      let legendsForReceive = Object.assign({}, state.legends);
-      let legendForReceive = legendsForReceive[action.mapId];
+  [SET_CURRENT_SCALE]: (state, payload) => {
 
-      const legendItemsForReceive = legendForReceive.items.map(function(
-        leg,
-        idx
-      ) {
-        if (leg.url === action.url) {
-          leg.legendLayers = action.layers.map(function(lyr) {
-            const legendData = lyr.legend.map(function(leg) {
-              return {
-                label: leg.label,
-                image: leg.imageData,
-                imageHeight: leg.height,
-                imageWidth: leg.width,
-                id: guid()
-              };
-            });
+    return Object.assign({}, state, {'currentScale': payload.scale});
+  },
 
+  [RESET_LEGEND_IS_FETCHING]: (state, payload) => {
+
+    return Object.assign({}, state, {'isFetching': false});
+  },
+
+  [REQUEST_LEGEND_DATA]: (state, payload) => {
+
+    return Object.assign({}, state, {'isFetching': true});
+  },
+
+  [RECEIVE_LEGEND_DATA]: (state, payload) => {
+  
+    let legends = Object.assign({}, state.legends);
+    let legend = legends[payload.mapId];
+
+    const legendItems = legend.items.map((leg, idx) => {
+      if (leg.url === payload.url) {
+        leg.legendLayers = payload.layers.map((lyr) => {
+          const legendData = lyr.legend.map((subnode) => {
             return {
-              subLayerId: lyr.layerId,
-              subLayerName: lyr.layerName,
-              subLayerMinScale: lyr.minScale,
-              subLayerMaxScale: lyr.maxScale,
-              subLayerScaleRestricted: lyr.minScale !== 0 || lyr.maxScale !== 0,
-              subLayerLegendData: legendData,
-              visible: leg.subLayersVisible
-                ? leg.subLayersVisible.indexOf(lyr.layerId) > -1
-                : true,
-              expanded: true,
+              label: subnode.label,
+              image: subnode.imageData,
+              imageHeight: subnode.height,
+              imageWidth: subnode.width,
               id: guid()
             };
           });
-        }
-
-        leg.alreadyLoaded = true;
-        leg.expanded = true;
-        return leg;
-      });
-
-      legendForReceive.items = legendItemsForReceive;
-      legendsForReceive[action.mapId] = legendForReceive;
-
-      return Object.assign({}, state, {
-        isFetching: false,
-        legends: legendsForReceive
-      });
-
-    case SET_INITIAL_LEGEND_DATA:
-      let viewsForInitialData = Object.assign({}, state.views);
-      viewsForInitialData[action.mapId] = action.view;
-
-      const layerLegendForInitialData = action.view.map.layers
-        .filter(lyr => lyr.allSublayers)
-        .map(function(initLyr, idx) {
-          const subLayersVisibleForInitialData = [];
-          for (let subInitLayer in initLyr.allSublayers.items) {
-            if (initLyr.allSublayers.items.hasOwnProperty(subInitLayer)) {
-              let sl = initLyr.allSublayers.items[subInitLayer];
-              if (sl.visible) {
-                subLayersVisibleForInitialData.push(sl.id);
-              }
-            }
-          }
 
           return {
-            layerId: idx,
-            layerName: initLyr.title || initLyr.id,
-            minScale: initLyr.minScale,
-            maxScale: initLyr.maxScale,
-            scaleRestricted: initLyr.minScale !== 0 && initLyr.maxScale !== 0,
-            visible: true,
-            // initLyr.visible === null || initLyr.visible == undefined ? true : initLyr.visible,
-            subLayersVisible: subLayersVisibleForInitialData,
-            url: initLyr.url,
-            legendLayers: null,
-            alreadyLoaded: false,
-            expanded: false,
+            subLayerId: lyr.layerId,
+            subLayerName: lyr.layerName,
+            subLayerMinScale: lyr.minScale,
+            subLayerMaxScale: lyr.maxScale,
+            subLayerScaleRestricted: lyr.minScale !== 0 || lyr.maxScale !== 0,
+            subLayerLegendData: legendData,
+            visible: leg.subLayersVisible
+              ? leg.subLayersVisible.indexOf(lyr.layerId) > -1
+              : true,
+            expanded: true,
             id: guid()
           };
         });
+      }
 
-      let legendsForInitialData = Object.assign({}, state.legends);
-      legendsForInitialData[action.mapId] = layerLegendForInitialData;
+      leg.alreadyLoaded = true;
+      leg.expanded = true;
+      return leg;
+    });
 
-      return Object.assign({}, state, {
-        legends: legendsForInitialData,
-        views: viewsForInitialData
+    legend.items = legendItems;
+    legends[payload.mapId] = legend;
+
+    return Object.assign({}, state, {
+      'isFetching': false,
+      'legends': legends
+    });
+  },
+
+  [SET_INITIAL_LEGEND_DATA]: (state, payload) => {
+
+    let views = Object.assign({}, state.views);
+    views[payload.mapId] = payload.view;
+
+    const legend = payload.view.map.layers
+      .filter(lyr => lyr.allSublayers)
+      .map((initLyr, idx) => {
+        
+        let subLayersVisible = [];
+
+        initLyr.allSublayers.items.forEach((sl) => {
+
+          if (sl.visible) {
+            subLayersVisible.push(sl.id);
+          }
+        });
+
+        return {
+          layerId: idx,
+          layerName: initLyr.title || initLyr.id,
+          minScale: initLyr.minScale,
+          maxScale: initLyr.maxScale,
+          scaleRestricted: initLyr.minScale !== 0 && initLyr.maxScale !== 0,
+          visible: true,
+          // initLyr.visible === null || initLyr.visible == undefined ? true : initLyr.visible,
+          subLayersVisible: subLayersVisible,
+          url: initLyr.url,
+          legendLayers: null,
+          alreadyLoaded: false,
+          expanded: false,
+          id: guid()
+        };
       });
 
-    case TOGGLE_LEGEND_NODE_EXPANDED:
-      let legendsForToggleNodeExpanded = Object.assign({}, state.legends);
-      let legendForToggleNodeExpanded = legendsForToggleNodeExpanded[action.mapId];
+    let legends = Object.assign({}, state.legends);
+    legends[payload.mapId] = legend;
 
-      const legendItemsForToggleNodeExpanded = legendForToggleNodeExpanded.items.map(
-        function(leg, idx) {
-          if (leg.id === action.nodeId) {
-            leg.expanded = !leg.expanded;
-          } else if (leg.legendLayers) {
-            const legendLayersForToggleNodeExpanded = leg.legendLayers.map(
-              function(lyr) {
-                if (lyr.id === action.nodeId) {
-                  lyr.expanded = !lyr.expanded;
-                }
-                return lyr;
+    return Object.assign({}, state, {
+      'legends': legends,
+      'views': views
+    });
+  },
+
+  [TOGGLE_LEGEND_NODE_EXPANDED]: (state, payload) => {
+
+    let legends = Object.assign({}, state.legends);
+    let legend = legends[payload.mapId];
+
+    const legendItems = legend.items.map((leg, idx) => {
+
+        if (leg.id === payload.nodeId) {
+          leg.expanded = !leg.expanded;
+        } 
+        else if (leg.legendLayers) {
+          const legendLayers = leg.legendLayers.map((lyr) => {
+              if (lyr.id === payload.nodeId) {
+                lyr.expanded = !lyr.expanded;
               }
-            );
-
-            leg.legendLayers = legendLayersForToggleNodeExpanded;
-          }
-          return leg;
-        }
-      );
-
-      legendForToggleNodeExpanded.items = legendItemsForToggleNodeExpanded;
-      legendsForToggleNodeExpanded[action.mapId] = legendForToggleNodeExpanded;
-
-      return Object.assign({}, state, {legends: legendsForToggleNodeExpanded});
-
-    case TOGGLE_LEGEND_NODE_VISIBLE:
-      let legendsForToggleNodeVisible = Object.assign({}, state.legends);
-      let legendForToggleNodeVisible = legendsForToggleNodeVisible[action.mapId];
-
-      const legendItemsForToggleNodeVisible = legendForToggleNodeVisible.items.map(
-        function(leg, idx) {
-          if (leg.id === action.nodeId) {
-            leg.visible = !leg.visible;
-          } else if (leg.legendLayers) {
-            const legendLayersForToggleNodeVisible = leg.legendLayers.map(
-              function(lyr) {
-                if (lyr.id === action.nodeId) {
-                  lyr.visible = !lyr.visible;
-                }
-
-                return lyr;
-              }
-            );
-
-            const subLayersVisibleForToggleNodeVisible = [];
-            for (let sl in leg.legendLayers) {
-              if (leg.legendLayers.hasOwnProperty(sl)) {
-                if (leg.legendLayers[sl].visible) {
-                  subLayersVisibleForToggleNodeVisible.push(
-                    leg.legendLayers[sl].subLayerId
-                  );
-                }
-              }
+              return lyr;
             }
+          );
 
-            leg.subLayersVisible = subLayersVisibleForToggleNodeVisible;
-            leg.legendLayers = legendLayersForToggleNodeVisible;
-          }
-
-          return leg;
+          leg.legendLayers = legendLayers;
         }
-      );
+        return leg;
+      }
+    );
 
-      legendForToggleNodeVisible.items = legendItemsForToggleNodeVisible;
-      legendsForToggleNodeVisible[action.mapId] = legendForToggleNodeVisible;
+    legend.items = legendItems;
+    legends[payload.mapId] = legend;
 
-      updateLayers(state.views[action.mapId], legendForToggleNodeVisible);
+    return Object.assign({}, state, {'legends': legends});
+  },
+      
+  [TOGGLE_LEGEND_NODE_VISIBLE]: (state, payload) => {
 
-      return Object.assign({}, state, {legends: legendsForToggleNodeVisible});
+    let legends = Object.assign({}, state.legends);
+    let legend = legends[payload.mapId];
 
-    default:
-      return state;
+    const legendItems = legend.items.map((leg, idx) => {
+        if (leg.id === payload.nodeId) {
+          leg.visible = !leg.visible;
+        } 
+        else if (leg.legendLayers) {
+          const legendLayers = leg.legendLayers.map((lyr) => {
+              if (lyr.id === payload.nodeId) {
+                lyr.visible = !lyr.visible;
+              }
+
+              return lyr;
+            }
+          );
+
+          let subLayersVisible = [];
+
+          leg.legendLayers.forEach((layer) => {
+
+            if (layer.visible) {
+              subLayersVisible.push(layer.subLayerId);
+            }
+          });
+
+          leg.subLayersVisible = subLayersVisible;
+          leg.legendLayers = legendLayers;
+        }
+
+        return leg;
+      }
+    );
+
+    legend.items = legendItems;
+    legends[payload.mapId] = legend;
+
+    updateLayers(state.views[payload.mapId], legend);
+
+    return Object.assign({}, state, {'legends': legends});
   }
-}
+});

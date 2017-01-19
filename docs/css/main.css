@@ -8,6 +8,7 @@ html, body {
     background-color: #FEFEFF;
     color: #333;
     font-family: "Avenir Next W00","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
 }
 
 #app-container {

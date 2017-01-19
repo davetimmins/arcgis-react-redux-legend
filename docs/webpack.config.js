@@ -2,6 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
+  devtool: 'eval',
   entry: {
     index: './src/main.js',
   },
@@ -22,8 +23,5 @@ module.exports = {
         }
       }      
     ]
-  },
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin({comments: false, compress: { warnings: false }, screw_ie8: true})
-  ]
+  }
 };
