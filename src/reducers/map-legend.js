@@ -142,8 +142,8 @@ export default createReducer(initialState, {
     let views = Object.assign({}, state.views);
     views[payload.mapId] = payload.view;
 
-    const legend = payload.view.map.layers
-      .filter(lyr => lyr.allSublayers)
+    const layersWithSublayers = payload.view.map.layers
+      .filter(lyr => !lyr.loadError && lyr.allSublayers)
       .map((initLyr, idx) => {
         
         let subLayersVisible = [];
@@ -160,11 +160,10 @@ export default createReducer(initialState, {
           layerName: initLyr.title || initLyr.id,
           minScale: initLyr.minScale,
           maxScale: initLyr.maxScale,
-          scaleRestricted: initLyr.minScale !== 0 && initLyr.maxScale !== 0,
-          visible: true,
-          // initLyr.visible === null || initLyr.visible == undefined ? true : initLyr.visible,
+          scaleRestricted: initLyr.minScale !== 0 || initLyr.maxScale !== 0,
+          visible: initLyr.visible,
           subLayersVisible: subLayersVisible,
-          url: initLyr.url,
+          url: initLyr.url.replace(/\/+$/, ''),
           legendLayers: null,
           alreadyLoaded: false,
           expanded: false,
@@ -172,8 +171,29 @@ export default createReducer(initialState, {
         };
       });
 
+    const graphicsLayers = payload.view.map.layers
+      .filter(lyr => 
+        !lyr.loadError && lyr.type 
+        && (lyr.type.toLowerCase() === 'feature' || lyr.type.toLowerCase() === 'graphics'))
+      .map((initLyr, idx) => {
+        
+        return {
+          layerId: idx,
+          layerName: initLyr.title || initLyr.id,
+          minScale: initLyr.minScale,
+          maxScale: initLyr.maxScale,
+          scaleRestricted: initLyr.minScale !== 0 || initLyr.maxScale !== 0,
+          visible: initLyr.visible,      
+          legendLayers: null,
+          alreadyLoaded: true,
+          expanded: false,
+          id: guid()
+        };
+      });
+
+
     let legends = Object.assign({}, state.legends);
-    legends[payload.mapId] = legend;
+    legends[payload.mapId] = layersWithSublayers.concat(graphicsLayers);
 
     return Object.assign({}, state, {
       'legends': legends,

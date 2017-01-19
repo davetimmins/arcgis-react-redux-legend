@@ -26,14 +26,19 @@ class MapUi extends React.Component {
           (Map, SceneView, MapImageLayer) => {
 
             const layer1 = new MapImageLayer({
-              url: "http://sampleserver6.arcgisonline.com/arcgis/rest/services/RedlandsEmergencyVehicles/MapServer"
+              url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/RedlandsEmergencyVehicles/MapServer"
             });
 
             const layer2 = new MapImageLayer({
-              url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer"
+              url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer",
+              visible: false
             });
 
-            const map = new Map({basemap: "topo", layers: [layer1, layer2]});
+            const layer3 = new MapImageLayer({
+              url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Hurricanes/MapServer/'
+            });
+
+            const map = new Map({basemap: "topo", layers: [layer1, layer2, layer3]});
 
             const view = new SceneView({
               container: ReactDOM.findDOMNode(this.refs.mapView),
@@ -41,8 +46,8 @@ class MapUi extends React.Component {
               padding: {right: 280}
             });
 
-            layer2.then(function() {
-              view.goTo(layer2.fullExtent);
+            layer3.then(function(lyr) {
+              view.goTo(lyr.fullExtent);
             });
 
             this.setState({view: view});

@@ -73,7 +73,7 @@ export const setInitialLegend = (view, mapId) => {
         view.map.layers.forEach((lyr) => {
           watchUtils.once(lyr, "loaded", function(value) {
             const allLoaded = view.map.layers.items
-              .map(a => a.loaded)
+              .map(a => a.loaded || a.loadError)
               .reduce((prev, curr) => prev && curr);
 
             if (allLoaded) {
