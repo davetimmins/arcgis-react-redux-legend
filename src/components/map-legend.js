@@ -80,41 +80,22 @@ class MapLegend extends React.Component {
 
     let subNodeExpander = !item.subLayerLegendData
       ? ""
-      : item.expanded
-        ? (
-          <div onClick={() => toggleNodeExpanded(item.id, mapId)}
-            className="click-legend-node">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" className="svg-icon">
-              <path d="M28 9v5L16 26 4 14V9l12 12L28 9z"/>
-            </svg>
-          </div>
-        )
-        : (
-          <div onClick={() => toggleNodeExpanded(item.id, mapId)}
-            className="click-legend-node">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" className="svg-icon">
-              <path d="M7 4h5l12 12-12 12H7l12-12L7 4z"/>
-            </svg>
-          </div>
-        );
+      : <div onClick={() => toggleNodeExpanded(item.id, mapId)}
+          className="click-legend-node">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" className="svg-icon">
+            {item.expanded
+              ? <path d="M28 9v5L16 26 4 14V9l12 12L28 9z"/>
+              : <path d="M7 4h5l12 12-12 12H7l12-12L7 4z"/>}
+          </svg>
+        </div>;
 
-    let subNodeCheckbox = item.visible
-      ? (
-        <div className="inline-block-display">
-          <label className='legend-checkbox-label'>	    
-            <input type="checkbox" className='legend-checkbox' onChange={() => toggleNodeVisible(item.id, mapId)} checked />
-             {item.subLayerName}
-          </label> 
-        </div>
-      )
-      : (
-        <div className="inline-block-display">
-          <label className='legend-checkbox-label'>	    
-            <input type="checkbox" className='legend-checkbox' onChange={() => toggleNodeVisible(item.id, mapId)} />
-             {item.subLayerName}
-          </label> 
-        </div>
-      );
+    let subNodeCheckbox = 
+      <div className="inline-block-display">
+        <label className='legend-checkbox-label'>	    
+          <input type="checkbox" className='legend-checkbox' onChange={() => toggleNodeVisible(item.id, mapId)} checked={item.visible} />
+            {item.subLayerName}
+        </label> 
+      </div>;
 
     return (
       <div key={item.id} style={marginStyle}>
@@ -134,41 +115,22 @@ class MapLegend extends React.Component {
 
     let topNodeExpander = !item.legendLayers
       ? ""
-      : item.expanded
-        ? (
-          <div onClick={() => toggleNodeExpanded(item.id, mapId)}
-            className="click-legend-node">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" className="svg-icon">
-              <path d="M28 9v5L16 26 4 14V9l12 12L28 9z"/>
-            </svg>
-          </div>
-        )
-        : (
-          <div onClick={() => toggleNodeExpanded(item.id, mapId)}
-            className="click-legend-node">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" className="svg-icon">
-              <path d="M7 4h5l12 12-12 12H7l12-12L7 4z"/>
-            </svg>
-          </div>
-        );
-
-    let nodeCheckbox = item.visible
-      ? (
-        <div className="inline-block-display">
-          <label className='legend-checkbox-label'>	    
-            <input type="checkbox" className='legend-checkbox' onChange={() => toggleNodeVisible(item.id, mapId)} checked />
-             {item.layerName}
-          </label>          
-        </div>
-      )
-      : (
-        <div className="inline-block-display">         
-          <label className='legend-checkbox-label'>	    
-            <input type="checkbox" className='legend-checkbox' onChange={() => toggleNodeVisible(item.id, mapId)} />
-             {item.layerName}
-          </label> 
-        </div>
-      );
+      : <div onClick={() => toggleNodeExpanded(item.id, mapId)}
+          className="click-legend-node">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" className="svg-icon">
+            {item.expanded 
+              ? <path d="M28 9v5L16 26 4 14V9l12 12L28 9z"/> 
+            : <path d="M7 4h5l12 12-12 12H7l12-12L7 4z"/>}
+          </svg>
+        </div>;
+        
+    let nodeCheckbox = 
+      <div className="inline-block-display">
+        <label className='legend-checkbox-label'>	    
+          <input type="checkbox" className='legend-checkbox' onChange={() => toggleNodeVisible(item.id, mapId)} checked={item.visible} />
+            {item.layerName}
+        </label>          
+      </div>;
 
     return (
       <div key={item.id} style={marginStyle}>

@@ -69,10 +69,6 @@ class MapUi extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {};
-};
-
 const mapDispatchToProps = dispatch => {
   return {
     setInitialLegend: (view, mapId) => {
@@ -81,4 +77,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapUi);
+export default connect(null, mapDispatchToProps)(MapUi);
