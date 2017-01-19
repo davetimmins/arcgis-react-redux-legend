@@ -56,7 +56,7 @@ const initialState = {
   isFetching: false,
   legends: {},
   views: {},
-  currentScale: 0
+  scales: {}
 };
 
 const createReducer = (initialState, reducerMap) => {
@@ -73,7 +73,10 @@ export default createReducer(initialState, {
 
   [SET_CURRENT_SCALE]: (state, payload) => {
 
-    return Object.assign({}, state, {'currentScale': payload.scale});
+    let scales = Object.assign({}, state.scales);
+    scales[payload.mapId] = payload.scale;
+
+    return Object.assign({}, state, {'scales': scales});
   },
 
   [RESET_LEGEND_IS_FETCHING]: (state, payload) => {

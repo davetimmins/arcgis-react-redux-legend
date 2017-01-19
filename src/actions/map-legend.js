@@ -88,7 +88,7 @@ export const setInitialLegend = (view, mapId) => {
         view.watch("scale", function(newScale) {
           dispatch({
             type: SET_CURRENT_SCALE, 
-            payload: { scale: newScale }
+            payload: { scale: newScale, mapId }
           });
         });
       });
