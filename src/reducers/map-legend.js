@@ -5,7 +5,8 @@
   RECEIVE_LEGEND_DATA,
   SET_INITIAL_LEGEND_DATA,
   TOGGLE_LEGEND_NODE_EXPANDED,
-  TOGGLE_LEGEND_NODE_VISIBLE
+  TOGGLE_LEGEND_NODE_VISIBLE,
+  SET_LEGEND_DOM_DATA
 } from "../actions/map-legend";
 
 const s4 = () => {
@@ -165,9 +166,11 @@ export default createReducer(initialState, {
           subLayersVisible: subLayersVisible,
           url: initLyr.url.replace(/\/+$/, ''),
           legendLayers: null,
+          hasDomNode: false,
           alreadyLoaded: false,
           expanded: false,
-          id: guid()
+          id: guid(),
+          uid: initLyr.uid
         };
       });
 
@@ -185,9 +188,11 @@ export default createReducer(initialState, {
           scaleRestricted: initLyr.minScale !== 0 || initLyr.maxScale !== 0,
           visible: initLyr.visible,      
           legendLayers: null,
+          hasDomNode: false,
           alreadyLoaded: true,
           expanded: false,
-          id: guid()
+          id: guid(),
+          uid: initLyr.uid
         };
       });
 
@@ -198,6 +203,33 @@ export default createReducer(initialState, {
     return Object.assign({}, state, {
       'legends': legends,
       'views': views
+    });
+  },
+
+  [SET_LEGEND_DOM_DATA]: (state, payload) => {
+
+    let legends = Object.assign({}, state.legends);
+
+    const uid = payload.legendDOMForLayer.root.id.split('_').pop();
+
+    legends[payload.mapId].items = legends[payload.mapId].items.map((leg, idx) => {
+
+      if (
+        leg.hasDomNode === false && leg.uid === uid &&
+        payload.legendDOMForLayer.layer && 
+        payload.legendDOMForLayer.layer.children && payload.legendDOMForLayer.layer.children.length > 0
+        ) {
+
+        leg.hasDomNode = true;
+        leg.domNode = payload.legendDOMForLayer.layer.outerHTML;
+        leg.expanded = true;
+      }
+
+      return leg;
+    });
+
+    return Object.assign({}, state, {
+      'legends': legends
     });
   },
 

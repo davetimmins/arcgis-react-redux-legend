@@ -22,8 +22,8 @@ class MapUi extends React.Component {
         }
 
         esriLoader.dojoRequire(
-          ["esri/Map", "esri/views/SceneView", "esri/layers/MapImageLayer"],
-          (Map, SceneView, MapImageLayer) => {
+          ["esri/Map", "esri/views/SceneView", "esri/layers/MapImageLayer", "esri/WebMap"],
+          (Map, SceneView, MapImageLayer, WebMap) => {
 
             const layer1 = new MapImageLayer({
               url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/RedlandsEmergencyVehicles/MapServer"
@@ -39,6 +39,16 @@ class MapUi extends React.Component {
             });
 
             const map = new Map({basemap: "topo", layers: [layer1, layer2, layer3]});
+
+            // const view = new SceneView({
+            //   container: ReactDOM.findDOMNode(this.refs.mapView),
+            //   map: new WebMap({
+            //     portalItem: {
+            //       id: '4abe6a830b8f466dacf8abfde567a781'
+            //     }
+            //   }),
+            //   padding: {right: 280}
+            // });
 
             const view = new SceneView({
               container: ReactDOM.findDOMNode(this.refs.mapView),

@@ -111,9 +111,14 @@ class MapLegend extends React.Component {
     const currentScale = scales[mapId];
 
     const marginStyle = {marginLeft: 4};
+    const subMarginStyle = {marginLeft: 8, marginTop: 8};
 
-    let sublayers = item.expanded && item.legendLayers
-      ? item.legendLayers.map(this.renderSubNodes)
+    let sublayers = item.expanded && (item.legendLayers || item.hasDomNode)
+      ? item.legendLayers 
+        ? item.legendLayers.map(this.renderSubNodes)
+        : item.hasDomNode 
+          ? <div style={subMarginStyle} dangerouslySetInnerHTML={{__html: item.domNode}}></div>
+          : ""
       : "";
 
     if (currentScale && item.scaleRestricted &&
@@ -121,7 +126,7 @@ class MapLegend extends React.Component {
       marginStyle.color = "#dcdcdc";
     }
 
-    let topNodeExpander = !item.legendLayers
+    let topNodeExpander = !item.legendLayers && !item.hasDomNode
       ? ""
       : <div onClick={() => toggleNodeExpanded(item.id, mapId)}
           className="click-legend-node">
