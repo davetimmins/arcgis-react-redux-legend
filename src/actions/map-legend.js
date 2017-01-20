@@ -99,7 +99,8 @@ export const setInitialLegend = (view, mapId) => {
               const layerInfos = view.map.layers
                 .filter(lyr => 
                   lyr.type 
-                  && (lyr.type.toLowerCase() === 'feature' || lyr.type.toLowerCase() === 'graphics'))
+                  && (lyr.type.toLowerCase() === 'feature' || lyr.type.toLowerCase() === 'graphics')
+                  && !lyr.loadError)
                 .map((lyr, idx) => {
                   
                   return {
@@ -114,15 +115,21 @@ export const setInitialLegend = (view, mapId) => {
                   layerInfos
                 });
 
+                let esriLegendCount = 0;
                 hookLegend(legend, (legendDOMForLayer) => {
-                  
-                  setTimeout(() => {
 
-                    dispatch({
-                      type: SET_LEGEND_DOM_DATA, 
-                      payload: { legendDOMForLayer, mapId } 
-                    });
-                  }, 1000);                
+                  esriLegendCount++;
+
+                  if (esriLegendCount === layerInfos.length) {
+
+                    setTimeout(() => {
+
+                      dispatch({
+                        type: SET_LEGEND_DOM_DATA, 
+                        payload: { legendWidget: legendDOMForLayer.widget, mapId } 
+                      });
+                    }, 1000);   
+                  }  
                 });
               }
             }

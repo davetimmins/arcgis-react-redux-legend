@@ -106,6 +106,11 @@ class MapLegend extends React.Component {
   };
 
   renderNodes = item => {
+
+    if (!item.alreadyLoaded) {
+      return '';
+    }
+
     const {mapId, scales, toggleNodeExpanded, toggleNodeVisible} = this.props;
 
     const currentScale = scales[mapId];

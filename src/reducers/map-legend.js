@@ -189,7 +189,7 @@ export default createReducer(initialState, {
           visible: initLyr.visible,      
           legendLayers: null,
           hasDomNode: false,
-          alreadyLoaded: true,
+          alreadyLoaded: false,
           expanded: false,
           id: guid(),
           uid: initLyr.uid
@@ -210,19 +210,30 @@ export default createReducer(initialState, {
 
     let legends = Object.assign({}, state.legends);
 
-    const uid = payload.legendDOMForLayer.root.id.split('_').pop();
-
     legends[payload.mapId].items = legends[payload.mapId].items.map((leg, idx) => {
 
-      if (
-        leg.hasDomNode === false && leg.uid === uid &&
-        payload.legendDOMForLayer.layer && 
-        payload.legendDOMForLayer.layer.children && payload.legendDOMForLayer.layer.children.length > 0
-        ) {
+      if (payload.legendWidget && payload.legendWidget.children && payload.legendWidget.children.length > 0) {
+      
+        let legendDOMForLayer = null;
+        for (let i = 0; i < payload.legendWidget.children.length; i++) {
+          
+          let child = payload.legendWidget.children[i];
+          if (child.id.split('_').pop() === leg.uid) {
+            legendDOMForLayer = child;
+            break;
+          }
+        }
+        
+        if (
+          leg.hasDomNode === false && legendDOMForLayer && 
+          legendDOMForLayer.children && legendDOMForLayer.children.length > 1
+          ) {
 
-        leg.hasDomNode = true;
-        leg.domNode = payload.legendDOMForLayer.layer.outerHTML;
-        leg.expanded = true;
+          leg.alreadyLoaded = true;
+          leg.hasDomNode = true;
+          leg.domNode = legendDOMForLayer.children[1].outerHTML;
+          leg.expanded = true;
+        }
       }
 
       return leg;
