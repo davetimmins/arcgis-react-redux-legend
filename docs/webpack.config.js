@@ -4,7 +4,7 @@ var webpack = require('webpack');
 module.exports = {
   devtool: 'eval',
   entry: {
-    index: './src/main.js',
+    index: ['babel-polyfill','./src/main.js'],
   },
   output: {
     path: path.join(__dirname, '/dist'),
@@ -18,8 +18,7 @@ module.exports = {
         exclude: /node_modules/,      
         loader: 'babel',
         query: {
-          presets: ['es2015', 'react', 'stage-0'],
-          plugins: ['transform-runtime']
+          presets: ['es2015', 'react', 'stage-0']
         }
       }      
     ]

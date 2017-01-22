@@ -6,6 +6,44 @@ import {
   toggleNodeVisible
 } from "../actions/map-legend";
 
+const styles = {  
+  clickLegendNode: {
+      cursor: 'pointer',
+      marginRight: 6,
+      display: 'inline-block'
+  },
+  inlineBlockDisplay: {
+      display: 'inline-block'
+  },
+  legendMap: {
+      paddingTop: 10,
+      paddingRight: 6,
+      paddingBottom: 10,
+      paddingLeft: 6,
+      backgroundColor: '#ebebeb',
+      fontWeight: 'bold'
+  },
+  legendCheckbox: {
+      position: 'relative',
+      display: 'inline-block',
+      marginTop: 10,
+      marginRight: 6,
+      marginBottom: 10,
+      marginLeft: 0
+  },
+  legendCheckboxLabel: {
+      minHeight: 20,
+      marginBottom: 0,
+      fontWeight: 400,
+      cursor: 'pointer'
+  },
+  textStyle: {
+    display: "inline-block",
+    verticalAlign: "bottom",
+    fontWeight: 500
+  }
+}
+
 class MapLegend extends React.Component {
   initialise = () => {
     const {legends, mapId, fetchLegend} = this.props;
@@ -40,17 +78,11 @@ class MapLegend extends React.Component {
       display: "inline-block"
     };
 
-    const textStyle = {
-      display: "inline-block",
-      verticalAlign: "bottom",
-      fontWeight: 500
-    };
-
     const marginStyle = {marginLeft: 16};
 
     return (
       <div key={item.id} style={marginStyle}>
-        <div style={imageStyle}></div><label style={textStyle}>
+        <div style={imageStyle}></div><label style={styles.textStyle}>
         {item.label}
       </label>
       </div>
@@ -81,9 +113,8 @@ class MapLegend extends React.Component {
 
     let subNodeExpander = !item.subLayerLegendData
       ? ""
-      : <div onClick={() => toggleNodeExpanded(item.id, mapId)}
-          className="click-legend-node">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" className="svg-icon">
+      : <div onClick={() => toggleNodeExpanded(item.id, mapId)} style={styles.clickLegendNode}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32">
             {item.expanded
               ? <path d="M28 9v5L16 26 4 14V9l12 12L28 9z"/>
               : <path d="M7 4h5l12 12-12 12H7l12-12L7 4z"/>}
@@ -91,9 +122,9 @@ class MapLegend extends React.Component {
         </div>;
 
     let subNodeCheckbox = 
-      <div className="inline-block-display">
-        <label className='legend-checkbox-label'>	    
-          <input type="checkbox" className='legend-checkbox' onChange={() => toggleNodeVisible(item.id, mapId)} checked={item.visible} />
+      <div style={styles.inlineBlockDisplay}>
+        <label style={styles.legendCheckboxLabel}>	    
+          <input type="checkbox" style={styles.legendCheckbox} onChange={() => toggleNodeVisible(item.id, mapId)} checked={item.visible} />
             {item.subLayerName}
         </label> 
       </div>;
@@ -133,9 +164,8 @@ class MapLegend extends React.Component {
 
     let topNodeExpander = !item.legendLayers && !item.hasDomNode
       ? ""
-      : <div onClick={() => toggleNodeExpanded(item.id, mapId)}
-          className="click-legend-node">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" className="svg-icon">
+      : <div onClick={() => toggleNodeExpanded(item.id, mapId)} style={styles.clickLegendNode}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32">
             {item.expanded 
               ? <path d="M28 9v5L16 26 4 14V9l12 12L28 9z"/> 
             : <path d="M7 4h5l12 12-12 12H7l12-12L7 4z"/>}
@@ -143,9 +173,9 @@ class MapLegend extends React.Component {
         </div>;
         
     let nodeCheckbox = 
-      <div className="inline-block-display">
-        <label className='legend-checkbox-label'>	    
-          <input type="checkbox" className='legend-checkbox' onChange={() => toggleNodeVisible(item.id, mapId)} checked={item.visible} />
+      <div style={styles.inlineBlockDisplay}>
+        <label style={styles.legendCheckboxLabel}>	    
+          <input type="checkbox" style={styles.legendCheckbox} onChange={() => toggleNodeVisible(item.id, mapId)} checked={item.visible} />
             {item.layerName}
         </label>          
       </div>;
@@ -168,7 +198,7 @@ class MapLegend extends React.Component {
     return (
       <div id="legend">
         <div>
-          <h5 className="legend-map">{mapId.replace("-", " - ")}</h5>
+          <h5 style={styles.legendMap}>{mapId.split("-").join(" - ")}</h5>
         </div>
         <div>
           {legend.items.map(this.renderNodes)}
