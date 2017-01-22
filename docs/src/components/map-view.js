@@ -9,7 +9,7 @@ class MapUi extends React.Component {
 
   state = this.initialState;
 
-  componentWillMount() {
+  componentDidMount() {
 
     const {mapId, setInitialLegend} = this.props;
 
@@ -44,11 +44,13 @@ class MapUi extends React.Component {
             //   container: ReactDOM.findDOMNode(this.refs.mapView),
             //   map: new WebMap({
             //     portalItem: {
-            //       id: '4abe6a830b8f466dacf8abfde567a781'
+            //       id: '8e42e164d4174da09f61fe0d3f206641'
             //     }
             //   }),
             //   padding: {right: 280}
             // });
+
+            //view.map.layers.add(layer3);
 
             const view = new SceneView({
               container: ReactDOM.findDOMNode(this.refs.mapView),

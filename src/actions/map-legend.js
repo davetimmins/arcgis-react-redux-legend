@@ -100,7 +100,8 @@ export const setInitialLegend = (view, mapId) => {
                 .filter(lyr => 
                   lyr.type 
                   && (lyr.type.toLowerCase() === 'feature' || lyr.type.toLowerCase() === 'graphics')
-                  && !lyr.loadError)
+                  && !lyr.loadError
+                  && (lyr.url || lyr.source))
                 .map((lyr, idx) => {
                   
                   return {
@@ -128,7 +129,10 @@ export const setInitialLegend = (view, mapId) => {
                         type: SET_LEGEND_DOM_DATA, 
                         payload: { legendWidget: legendDOMForLayer.widget, mapId } 
                       });
-                    }, 1000);   
+
+                      legend.destroy();
+                      legend = null;
+                    }, 400);   
                   }  
                 });
               }
