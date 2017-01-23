@@ -13,7 +13,9 @@ const styles = {
       display: 'inline-block'
   },
   inlineBlockDisplay: {
-      display: 'inline-block'
+      display: 'inline-block',
+      marginTop: 8,
+      marginBottom: 0
   },
   legendMap: {
       paddingTop: 10,
@@ -24,16 +26,10 @@ const styles = {
       fontWeight: 'bold'
   },
   legendCheckbox: {
-      position: 'relative',
-      display: 'inline-block',
-      marginTop: 10,
-      marginRight: 6,
-      marginBottom: 10,
-      marginLeft: 0
+      cursor: 'pointer',
+      marginRight: 8
   },
   legendCheckboxLabel: {
-      minHeight: 20,
-      marginBottom: 0,
       fontWeight: 400,
       cursor: 'pointer'
   },
@@ -75,16 +71,15 @@ class MapLegend extends React.Component {
       height: item.imageHeight,
       backgroundImage: "url(data:image/png;base64," + item.image + ")",
       backgroundRepeat: "no-repeat",
-      display: "inline-block"
+      display: 'inline-block'
     };
 
-    const marginStyle = {marginLeft: 16};
+    const marginStyle = {marginLeft: 16, marginTop: 6};
 
     return (
       <div key={item.id} style={marginStyle}>
-        <div style={imageStyle}></div><label style={styles.textStyle}>
-        {item.label}
-      </label>
+        <div style={imageStyle} />
+        <label style={styles.textStyle}>{item.label}</label>
       </div>
     );
   };
@@ -99,7 +94,7 @@ class MapLegend extends React.Component {
 
     const currentScale = scales[mapId];
 
-    let marginStyle = {marginLeft: 8, marginTop: 8};
+    let marginStyle = {marginLeft: 8};
 
     let subLayerLegendData = item.expanded && item.subLayerLegendData
       ? item.subLayerLegendData.map(this.renderSubNodeLegendData)
@@ -113,20 +108,18 @@ class MapLegend extends React.Component {
 
     let subNodeExpander = !item.subLayerLegendData
       ? ""
-      : <div onClick={() => toggleNodeExpanded(item.id, mapId)} style={styles.clickLegendNode}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32">
-            {item.expanded
-              ? <path d="M28 9v5L16 26 4 14V9l12 12L28 9z"/>
-              : <path d="M7 4h5l12 12-12 12H7l12-12L7 4z"/>}
-          </svg>
+      : <div onClick={() => toggleNodeExpanded(item.id, mapId)} style={styles.clickLegendNode}>          
+          {item.expanded
+            ? <span className='esri-icon-down' />
+            : <span className='esri-icon-right' />}          
         </div>;
 
     let subNodeCheckbox = 
-      <div style={styles.inlineBlockDisplay}>
-        <label style={styles.legendCheckboxLabel}>	    
-          <input type="checkbox" style={styles.legendCheckbox} onChange={() => toggleNodeVisible(item.id, mapId)} checked={item.visible} />
-            {item.subLayerName}
-        </label> 
+      <div style={styles.inlineBlockDisplay}>        
+        <div style={styles.inlineBlockDisplay}>
+          <span style={styles.legendCheckbox} onClick={() => toggleNodeVisible(item.id, mapId)} className={item.visible ? 'esri-icon-visible' : 'esri-icon-non-visible'} />
+          <label style={styles.legendCheckboxLabel} onClick={() => toggleNodeVisible(item.id, mapId)}>{item.subLayerName}</label>             
+        </div>
       </div>;
 
     return (
@@ -146,8 +139,8 @@ class MapLegend extends React.Component {
 
     const currentScale = scales[mapId];
 
-    const marginStyle = {marginLeft: 4};
-    const subMarginStyle = {marginLeft: 8, marginTop: 8};
+    const marginStyle = {marginLeft: 4, marginTop: 8};
+    const subMarginStyle = {marginLeft: 8};
 
     let sublayers = item.expanded && (item.legendLayers || item.hasDomNode)
       ? item.legendLayers 
@@ -165,19 +158,15 @@ class MapLegend extends React.Component {
     let topNodeExpander = !item.legendLayers && !item.hasDomNode
       ? ""
       : <div onClick={() => toggleNodeExpanded(item.id, mapId)} style={styles.clickLegendNode}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32">
-            {item.expanded 
-              ? <path d="M28 9v5L16 26 4 14V9l12 12L28 9z"/> 
-            : <path d="M7 4h5l12 12-12 12H7l12-12L7 4z"/>}
-          </svg>
+          {item.expanded
+            ? <span className='esri-icon-down' />
+            : <span className='esri-icon-right' />}    
         </div>;
         
     let nodeCheckbox = 
       <div style={styles.inlineBlockDisplay}>
-        <label style={styles.legendCheckboxLabel}>	    
-          <input type="checkbox" style={styles.legendCheckbox} onChange={() => toggleNodeVisible(item.id, mapId)} checked={item.visible} />
-            {item.layerName}
-        </label>          
+        <span style={styles.legendCheckbox} onClick={() => toggleNodeVisible(item.id, mapId)} className={item.visible ? 'esri-icon-visible' : 'esri-icon-non-visible'} />
+        <label style={styles.legendCheckboxLabel} onClick={() => toggleNodeVisible(item.id, mapId)}>{item.layerName}</label>             
       </div>;
 
     return (
