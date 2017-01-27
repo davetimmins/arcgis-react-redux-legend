@@ -98,7 +98,7 @@ class MapLegend extends React.Component {
 
     let subLayerLegendData = item.expanded && item.subLayerLegendData
       ? item.subLayerLegendData.map(this.renderSubNodeLegendData)
-      : "";
+      : null;
 
     if (currentScale && item.subLayerScaleRestricted &&
       (item.subLayerMinScale !== 0 && (item.subLayerMinScale < currentScale) 
@@ -107,7 +107,7 @@ class MapLegend extends React.Component {
     }
 
     let subNodeExpander = !item.subLayerLegendData
-      ? ""
+      ? null
       : <div onClick={() => toggleNodeExpanded(item.id, mapId)} style={styles.clickLegendNode}>          
           {item.expanded
             ? <span className='esri-icon-down' />
@@ -147,8 +147,8 @@ class MapLegend extends React.Component {
         ? item.legendLayers.map(this.renderSubNodes)
         : item.hasDomNode 
           ? <div style={subMarginStyle} dangerouslySetInnerHTML={{__html: item.domNode}}></div>
-          : ""
-      : "";
+          : null
+      : null;
 
     if (currentScale && item.scaleRestricted &&
       (item.minScale !== 0 && (item.minScale < currentScale) || item.maxScale !== 0 && (item.maxScale > currentScale))) {
@@ -156,7 +156,7 @@ class MapLegend extends React.Component {
     }
 
     let topNodeExpander = !item.legendLayers && !item.hasDomNode
-      ? ""
+      ? null
       : <div onClick={() => toggleNodeExpanded(item.id, mapId)} style={styles.clickLegendNode}>
           {item.expanded
             ? <span className='esri-icon-down' />

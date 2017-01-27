@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import {connect} from "react-redux";
 import * as esriLoader from "esri-loader";
 import {MapLegend,setInitialLegend} from "../../../dist/arcgis-react-redux-legend";
+import isWebGLEnabled from 'is-webgl-enabled';
+import isMobile from 'is-mobile';
 
 class MapUi extends React.Component {
   initialState = {view: null};
@@ -22,8 +24,10 @@ class MapUi extends React.Component {
         }
 
         esriLoader.dojoRequire(
-          ["esri/Map", "esri/views/SceneView", "esri/layers/MapImageLayer", "esri/WebMap"],
-          (Map, SceneView, MapImageLayer, WebMap) => {
+          ["esri/Map", isWebGLEnabled() && !isMobile() ? "esri/views/SceneView" : "esri/views/MapView", "esri/layers/MapImageLayer"],
+          (Map, View, MapImageLayer) => {
+          // ["esri/Map", isWebGLEnabled() && !isMobile() ? "esri/views/SceneView" : "esri/views/MapView", "esri/WebMap"],
+          // (Map, View, WebMap) => {
 
             const layer1 = new MapImageLayer({
               url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/RedlandsEmergencyVehicles/MapServer"
@@ -52,7 +56,7 @@ class MapUi extends React.Component {
 
             //view.map.layers.add(layer3);
 
-            const view = new SceneView({
+            const view = new View({
               container: ReactDOM.findDOMNode(this.refs.mapView),
               map: map,
               padding: {right: 280}
@@ -77,10 +81,11 @@ class MapUi extends React.Component {
     const {view} = this.state;
 
     const mapStyle = {width: "100%", height: "100%"};
+    const legend = view ? <MapLegend mapId={mapId} /> : null;
 
     return (
       <div style={mapStyle} ref="mapView">
-        <MapLegend mapId={mapId} />
+        {legend}
       </div>
     );
   }
