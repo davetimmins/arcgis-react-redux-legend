@@ -72,6 +72,29 @@ const hookLegend = (legend, callback) => {
     };
   }
 
+const debounce = (func, wait, immediate) => {
+	var timeout;
+	return function() {
+		var context = this, args = arguments;
+		var later = function() {
+			timeout = null;
+			if (!immediate) func.apply(context, args);
+		};
+		var callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	};
+};
+
+const dispatchScaleChange = debounce(function(dispatch, newScale, mapId) {
+	
+  dispatch({
+    type: SET_CURRENT_SCALE, 
+    payload: { scale: newScale, mapId }
+  });
+}, 250);
+
 export const setInitialLegend = (view, mapId) => {
 
   return function(dispatch) {
@@ -80,15 +103,15 @@ export const setInitialLegend = (view, mapId) => {
       ["esri/core/watchUtils", "esri/widgets/Legend"], 
       (watchUtils, Legend) => {
       
-      view.then(() => {
+      view.then(() => { 
 
         view.map.layers.forEach((lyr) => {
 
           watchUtils.once(lyr, "loaded", (value) => {
-
+           
             const allLoaded = view.map.layers.items
-              .map(a => a.loaded || a.loadError)
-              .reduce((prev, curr) => prev && curr);
+              .map(a => a.loaded || a.loadError !== null)
+              .reduce((prev, curr) => prev && curr, true);
 
             if (allLoaded) {
               dispatch({
@@ -141,10 +164,8 @@ export const setInitialLegend = (view, mapId) => {
         });
 
         view.watch("scale", (newScale) => {
-          dispatch({
-            type: SET_CURRENT_SCALE, 
-            payload: { scale: newScale, mapId }
-          });
+
+          dispatchScaleChange(dispatch, newScale, mapId);
         });
       });
     });

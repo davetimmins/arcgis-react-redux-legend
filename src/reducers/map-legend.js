@@ -87,7 +87,24 @@ export default createReducer(initialState, {
 
   [REQUEST_LEGEND_DATA]: (state, payload) => {
 
-    return Object.assign({}, state, {'isFetching': true});
+    let legends = Object.assign({}, state.legends);
+    let legend = legends[payload.mapId];
+
+    const legendItems = legend.items.map((leg, idx) => {
+      if (leg.url === payload.url) {
+        leg.isFetching = true;
+      }
+
+      return leg;
+    });
+
+    legend.items = legendItems;
+    legends[payload.mapId] = legend;
+
+    return Object.assign({}, state, {
+      'isFetching': true,
+      'legends': legends
+    });
   },
 
   [RECEIVE_LEGEND_DATA]: (state, payload) => {
@@ -122,10 +139,11 @@ export default createReducer(initialState, {
             id: guid()
           };
         });
+
+        leg.alreadyLoaded = true;
+        leg.expanded = true;
       }
 
-      leg.alreadyLoaded = true;
-      leg.expanded = true;
       return leg;
     });
 
@@ -168,6 +186,7 @@ export default createReducer(initialState, {
           legendLayers: null,
           hasDomNode: false,
           alreadyLoaded: false,
+          isFetching: false,
           expanded: false,
           id: guid(),
           uid: initLyr.uid
@@ -190,6 +209,7 @@ export default createReducer(initialState, {
           legendLayers: null,
           hasDomNode: false,
           alreadyLoaded: false,
+          isFetching: false,
           expanded: false,
           id: guid(),
           uid: initLyr.uid
@@ -308,7 +328,7 @@ export default createReducer(initialState, {
         }
 
         return leg;
-      }
+      } 
     );
 
     legend.items = legendItems;

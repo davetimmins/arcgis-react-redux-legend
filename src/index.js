@@ -1,7 +1,7 @@
 // components
 export const MapLegend = require('./components/map-legend').default;
 
-// redurcers
+// reducers
 export const reducer = require('./reducers/map-legend').default;
 
 // actions

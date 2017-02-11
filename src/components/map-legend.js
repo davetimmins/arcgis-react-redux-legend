@@ -51,7 +51,7 @@ class MapLegend extends React.Component {
 
     legend.items.forEach((lyr) => {
 
-      if (lyr.url && lyr.alreadyLoaded === false) {
+      if (lyr.url && !lyr.isFetching && !lyr.alreadyLoaded) {
         fetchLegend(lyr.url, mapId);
       }
     });
@@ -162,7 +162,7 @@ class MapLegend extends React.Component {
             ? <span className='esri-icon-down' />
             : <span className='esri-icon-right' />}    
         </div>;
-        
+         
     let nodeCheckbox = 
       <div style={styles.inlineBlockDisplay}>
         <span style={styles.legendCheckbox} onClick={() => toggleNodeVisible(item.id, mapId)} className={item.visible ? 'esri-icon-visible' : 'esri-icon-non-visible'} />
