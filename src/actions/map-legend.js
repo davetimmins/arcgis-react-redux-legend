@@ -128,6 +128,8 @@ export const setInitialLegend = (view, mapId) => {
 
     view.then(() => {
 
+      dispatchScaleChange(dispatch, view.scale, mapId);
+
       view.watch("scale", (newScale) => {
         dispatchScaleChange(dispatch, newScale, mapId);
       });
