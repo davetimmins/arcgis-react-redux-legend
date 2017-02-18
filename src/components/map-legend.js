@@ -49,7 +49,7 @@ class MapLegend extends React.Component {
       return;
     }
 
-    legend.items.forEach((lyr) => {
+    legend.forEach((lyr) => {
 
       if (lyr.url && !lyr.isFetching && !lyr.alreadyLoaded) {
         fetchLegend(lyr.url, mapId);
@@ -190,7 +190,7 @@ class MapLegend extends React.Component {
           <h5 style={styles.legendMap}>{mapId.split("-").join(" - ")}</h5>
         </div>
         <div>
-          {legend.items.map(this.renderNodes)}
+          {legend.map(this.renderNodes)}
         </div>
       </div>
     );

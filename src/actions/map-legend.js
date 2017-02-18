@@ -5,9 +5,11 @@ export const TOGGLE_LEGEND_NODE_VISIBLE = "map-legend/TOGGLE_LEGEND_NODE_VISIBLE
 export const RESET_LEGEND_IS_FETCHING = "map-legend/RESET_LEGEND_IS_FETCHING";
 export const REQUEST_LEGEND_DATA = "map-legend/REQUEST_LEGEND_DATA";
 export const RECEIVE_LEGEND_DATA = "map-legend/RECEIVE_LEGEND_DATA";
-export const SET_INITIAL_LEGEND_DATA = "map-legend/SET_INITIAL_LEGEND_DATA";
 export const TOGGLE_LEGEND_NODE_EXPANDED = "map-legend/TOGGLE_LEGEND_NODE_EXPANDED";
 export const SET_LEGEND_DOM_DATA = "map-legend/SET_LEGEND_DOM_DATA";
+
+export const SET_INITIAL_LEGEND_MAPIMAGELAYER_DATA = 'map-legend/SET_INITIAL_LEGEND_MAPIMAGELAYER_DATA';
+export const SET_INITIAL_LEGEND_GRAPHICSLAYER_DATA = 'map-legend/SET_INITIAL_LEGEND_GRAPHICSLAYER_DATA';
 
 export const toggleNodeExpanded = (nodeId, mapId) => {
   return {
@@ -62,15 +64,15 @@ export const fetchLegend = (url, mapId) => {
 
 const hookLegend = (legend, callback) => {
 
-    var original = legend._buildLegendDOMForLayer;
+  var original = legend._buildLegendDOMForLayer;
 
-    legend._buildLegendDOMForLayer = (a, b) => {
+  legend._buildLegendDOMForLayer = (a, b) => {
 
-      var result = original.call(legend, a, b);
-      callback(result);
-      return result;
-    };
-  }
+    var result = original.call(legend, a, b);
+    callback(result, legend);
+    return result;
+  };
+}
 
 const debounce = (func, wait, immediate) => {
 	var timeout;
@@ -95,78 +97,70 @@ const dispatchScaleChange = debounce(function(dispatch, newScale, mapId) {
   });
 }, 250);
 
+const createLayerLegend = (view, mapId, layer, dispatch) => {
+
+  esriLoader.dojoRequire(
+    ["esri/widgets/Legend"], 
+    (Legend) => {
+
+    hookLegend(new Legend({ view, layerInfos: [{ layer }] }), (legendDOMForLayer, legend) => {
+      
+      setTimeout(() => {
+
+        if (legendDOMForLayer && legendDOMForLayer.widget) {
+          dispatch({
+            type: SET_LEGEND_DOM_DATA, 
+            payload: { legendWidget: legendDOMForLayer.widget, mapId } 
+          });
+        }
+
+        if (legend && legend.destroy) {
+          legend.destroy();
+        }
+      }, 250);       
+    });
+  });    
+}
+
 export const setInitialLegend = (view, mapId) => {
 
   return function(dispatch) {
 
-    esriLoader.dojoRequire(
-      ["esri/core/watchUtils", "esri/widgets/Legend"], 
-      (watchUtils, Legend) => {
-      
-      view.then(() => { 
+    view.then(() => {
 
-        view.map.layers.forEach((lyr) => {
+      view.watch("scale", (newScale) => {
+        dispatchScaleChange(dispatch, newScale, mapId);
+      });
 
-          watchUtils.once(lyr, "loaded", (value) => {
-           
-            const allLoaded = view.map.layers.items
-              .map(a => a.loaded || a.loadError !== null)
-              .reduce((prev, curr) => prev && curr, true);
+      view.map.layers.forEach((lyr) => {
 
-            if (allLoaded) {
+        lyr.then(
+          loadedLayer => {
+
+            if (loadedLayer.loaded && loadedLayer.allSublayers) {
+
               dispatch({
-                type: SET_INITIAL_LEGEND_DATA, 
-                payload: { view, mapId } 
+                type: SET_INITIAL_LEGEND_MAPIMAGELAYER_DATA, 
+                payload: { view, mapId, layer: loadedLayer } 
+              });
+            }
+
+            if (loadedLayer.loaded
+              && loadedLayer.type 
+              && (loadedLayer.type.toLowerCase() === 'feature' || loadedLayer.type.toLowerCase() === 'graphics')
+              && (lyr.url || lyr.source)) {
+
+              dispatch({
+                type: SET_INITIAL_LEGEND_GRAPHICSLAYER_DATA, 
+                payload: { view, mapId, layer: loadedLayer } 
               });
 
-              const layerInfos = view.map.layers
-                .filter(lyr => 
-                  lyr.type 
-                  && (lyr.type.toLowerCase() === 'feature' || lyr.type.toLowerCase() === 'graphics')
-                  && !lyr.loadError
-                  && (lyr.url || lyr.source))
-                .map((lyr, idx) => {
-                  
-                  return {
-                    layer: lyr
-                  }
-                });
-
-              if (layerInfos && layerInfos.length > 0) { 
-                
-                let legend = new Legend({
-                  view: view,
-                  layerInfos
-                });
-
-                let esriLegendCount = 0;
-                hookLegend(legend, (legendDOMForLayer) => {
-
-                  esriLegendCount++;
-
-                  if (esriLegendCount === layerInfos.length) {
-
-                    setTimeout(() => {
-
-                      dispatch({
-                        type: SET_LEGEND_DOM_DATA, 
-                        payload: { legendWidget: legendDOMForLayer.widget, mapId } 
-                      });
-
-                      legend.destroy();
-                      legend = null;
-                    }, 400);   
-                  }  
-                });
-              }
+              createLayerLegend(view, mapId, loadedLayer, dispatch);
             }
+          },
+          error => {
+            console.error('Failed to load a layer for use with the legend control.', error);
           });
-        });
-
-        view.watch("scale", (newScale) => {
-
-          dispatchScaleChange(dispatch, newScale, mapId);
-        });
       });
     });
   };

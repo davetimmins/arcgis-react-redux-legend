@@ -3,10 +3,11 @@
   RESET_LEGEND_IS_FETCHING,
   REQUEST_LEGEND_DATA,
   RECEIVE_LEGEND_DATA,
-  SET_INITIAL_LEGEND_DATA,
   TOGGLE_LEGEND_NODE_EXPANDED,
   TOGGLE_LEGEND_NODE_VISIBLE,
-  SET_LEGEND_DOM_DATA
+  SET_LEGEND_DOM_DATA,
+  SET_INITIAL_LEGEND_MAPIMAGELAYER_DATA,
+  SET_INITIAL_LEGEND_GRAPHICSLAYER_DATA
 } from "../actions/map-legend";
 
 const s4 = () => {
@@ -19,7 +20,7 @@ const guid = () => {
 
 const updateLayers = (view, legend) => {
 
-  legend.items.forEach((legendLyr) => {
+  legend.forEach((legendLyr) => {
   
     if (legendLyr.alreadyLoaded === true) {
       const layerFind = view.map.layers.filter((lyr) => {
@@ -90,7 +91,7 @@ export default createReducer(initialState, {
     let legends = Object.assign({}, state.legends);
     let legend = legends[payload.mapId];
 
-    const legendItems = legend.items.map((leg, idx) => {
+    const legendItems = legend.map((leg, idx) => {
       if (leg.url === payload.url) {
         leg.isFetching = true;
       }
@@ -98,8 +99,7 @@ export default createReducer(initialState, {
       return leg;
     });
 
-    legend.items = legendItems;
-    legends[payload.mapId] = legend;
+    legends[payload.mapId] = legendItems;
 
     return Object.assign({}, state, {
       'isFetching': true,
@@ -112,7 +112,7 @@ export default createReducer(initialState, {
     let legends = Object.assign({}, state.legends);
     let legend = legends[payload.mapId];
 
-    const legendItems = legend.items.map((leg, idx) => {
+    const legendItems = legend.map((leg, idx) => {
       if (leg.url === payload.url) {
         leg.legendLayers = payload.layers.map((lyr) => {
           const legendData = lyr.legend.map((subnode) => {
@@ -147,8 +147,7 @@ export default createReducer(initialState, {
       return leg;
     });
 
-    legend.items = legendItems;
-    legends[payload.mapId] = legend;
+    legends[payload.mapId] = legendItems;
 
     return Object.assign({}, state, {
       'isFetching': false,
@@ -156,69 +155,41 @@ export default createReducer(initialState, {
     });
   },
 
-  [SET_INITIAL_LEGEND_DATA]: (state, payload) => {
+  [SET_INITIAL_LEGEND_MAPIMAGELAYER_DATA]: (state, payload) => {
 
     let views = Object.assign({}, state.views);
     views[payload.mapId] = payload.view;
 
-    const layersWithSublayers = payload.view.map.layers
-      .filter(lyr => !lyr.loadError && lyr.allSublayers)
-      .map((initLyr, idx) => {
-        
-        let subLayersVisible = [];
+    let initLyr = payload.layer;
+    let subLayersVisible = [];    
 
-        initLyr.allSublayers.items.forEach((sl) => {
+    initLyr.allSublayers.items.forEach((sl) => {
 
-          if (sl.visible) {
-            subLayersVisible.push(sl.id);
-          }
-        });
+      if (sl.visible) {
+        subLayersVisible.push(sl.id);
+      }
+    });
 
-        return {
-          layerId: idx,
-          layerName: initLyr.title || initLyr.id,
-          minScale: initLyr.minScale,
-          maxScale: initLyr.maxScale,
-          scaleRestricted: initLyr.minScale !== 0 || initLyr.maxScale !== 0,
-          visible: initLyr.visible,
-          subLayersVisible: subLayersVisible,
-          url: initLyr.url.replace(/\/+$/, ''),
-          legendLayers: null,
-          hasDomNode: false,
-          alreadyLoaded: false,
-          isFetching: false,
-          expanded: false,
-          id: guid(),
-          uid: initLyr.uid
-        };
-      });
-
-    const graphicsLayers = payload.view.map.layers
-      .filter(lyr => 
-        !lyr.loadError && lyr.type 
-        && (lyr.type.toLowerCase() === 'feature' || lyr.type.toLowerCase() === 'graphics'))
-      .map((initLyr, idx) => {
-        
-        return {
-          layerId: idx,
-          layerName: initLyr.title || initLyr.id,
-          minScale: initLyr.minScale,
-          maxScale: initLyr.maxScale,
-          scaleRestricted: initLyr.minScale !== 0 || initLyr.maxScale !== 0,
-          visible: initLyr.visible,      
-          legendLayers: null,
-          hasDomNode: false,
-          alreadyLoaded: false,
-          isFetching: false,
-          expanded: false,
-          id: guid(),
-          uid: initLyr.uid
-        };
-      });
-
+    let layer = [{
+      layerId: initLyr.id,
+      layerName: initLyr.title || initLyr.id,
+      minScale: initLyr.minScale,
+      maxScale: initLyr.maxScale,
+      scaleRestricted: initLyr.minScale !== 0 || initLyr.maxScale !== 0,
+      visible: initLyr.visible,
+      subLayersVisible: subLayersVisible,
+      url: initLyr.url.replace(/\/+$/, ''),
+      legendLayers: null,
+      hasDomNode: false,
+      alreadyLoaded: false,
+      isFetching: false,
+      expanded: false,
+      id: guid(),
+      uid: initLyr.uid
+    }];
 
     let legends = Object.assign({}, state.legends);
-    legends[payload.mapId] = layersWithSublayers.concat(graphicsLayers);
+    legends[payload.mapId] = legends[payload.mapId] && legends[payload.mapId].length ? legends[payload.mapId].concat(layer) : layer;
 
     return Object.assign({}, state, {
       'legends': legends,
@@ -226,11 +197,43 @@ export default createReducer(initialState, {
     });
   },
 
+  [SET_INITIAL_LEGEND_GRAPHICSLAYER_DATA]: (state, payload) => {
+
+    let views = Object.assign({}, state.views);
+    views[payload.mapId] = payload.view;
+
+    let initLyr = payload.layer;
+
+    let layer = [{
+      layerId: initLyr.id,
+      layerName: initLyr.title || initLyr.id,
+      minScale: initLyr.minScale,
+      maxScale: initLyr.maxScale,
+      scaleRestricted: initLyr.minScale !== 0 || initLyr.maxScale !== 0,
+      visible: initLyr.visible,      
+      legendLayers: null,
+      hasDomNode: false,
+      alreadyLoaded: false,
+      isFetching: false,
+      expanded: false,
+      id: guid(),
+      uid: initLyr.uid
+    }];
+
+    let legends = Object.assign({}, state.legends);
+    legends[payload.mapId] = legends[payload.mapId] && legends[payload.mapId].length ? legends[payload.mapId].concat(layer) : layer;
+
+    return Object.assign({}, state, {
+      'legends': legends,
+      'views': views
+    });
+  },
+  
   [SET_LEGEND_DOM_DATA]: (state, payload) => {
 
     let legends = Object.assign({}, state.legends);
 
-    legends[payload.mapId].items = legends[payload.mapId].items.map((leg, idx) => {
+    legends[payload.mapId] = legends[payload.mapId].map((leg, idx) => {
 
       if (payload.legendWidget && payload.legendWidget.children && payload.legendWidget.children.length > 0) {
       
@@ -269,7 +272,7 @@ export default createReducer(initialState, {
     let legends = Object.assign({}, state.legends);
     let legend = legends[payload.mapId];
 
-    const legendItems = legend.items.map((leg, idx) => {
+    const legendItems = legend.map((leg, idx) => {
 
         if (leg.id === payload.nodeId) {
           leg.expanded = !leg.expanded;
@@ -289,8 +292,7 @@ export default createReducer(initialState, {
       }
     );
 
-    legend.items = legendItems;
-    legends[payload.mapId] = legend;
+    legends[payload.mapId] = legendItems;
 
     return Object.assign({}, state, {'legends': legends});
   },
@@ -300,7 +302,7 @@ export default createReducer(initialState, {
     let legends = Object.assign({}, state.legends);
     let legend = legends[payload.mapId];
 
-    const legendItems = legend.items.map((leg, idx) => {
+    const legendItems = legend.map((leg, idx) => {
         if (leg.id === payload.nodeId) {
           leg.visible = !leg.visible;
         } 
@@ -331,8 +333,7 @@ export default createReducer(initialState, {
       } 
     );
 
-    legend.items = legendItems;
-    legends[payload.mapId] = legend;
+    legends[payload.mapId] = legendItems;
 
     updateLayers(state.views[payload.mapId], legend);
 

@@ -8,60 +8,77 @@ import isMobile from 'is-mobile';
 
 class MapUi extends React.Component {
 
-  createMap = () => {
+  createMap = (webMapId) => {
 
     const {mapId, initLegend} = this.props;
     
-    esriLoader.dojoRequire(
-        ["esri/Map", isWebGLEnabled() && !isMobile() ? "esri/views/SceneView" : "esri/views/MapView", "esri/layers/MapImageLayer"],
-        (Map, View, MapImageLayer) => {
-        // ["esri/Map", isWebGLEnabled() && !isMobile() ? "esri/views/SceneView" : "esri/views/MapView", "esri/WebMap"],
-        // (Map, View, WebMap) => {
+    if (webMapId) {
 
-          const layer1 = new MapImageLayer({
-            url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/RedlandsEmergencyVehicles/MapServer"
-          });
-
-          const layer2 = new MapImageLayer({
-            url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer",
-            visible: false
-          });
-
-          const layer3 = new MapImageLayer({
-            url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Hurricanes/MapServer/'
-          });
-
-          const map = new Map({basemap: "topo", layers: [layer1, layer2, layer3]});
-
-          // const view = new SceneView({
-          //   container: ReactDOM.findDOMNode(this.refs.mapView),
-          //   map: new WebMap({
-          //     portalItem: {
-          //       id: '8e42e164d4174da09f61fe0d3f206641'
-          //     }
-          //   }),
-          //   padding: {right: 280}
-          // });
-
-          //view.map.layers.add(layer3);
-
+      esriLoader.dojoRequire(
+        ["esri/Map", isWebGLEnabled() && !isMobile() ? "esri/views/SceneView" : "esri/views/MapView", "esri/WebMap"],
+        (Map, View, WebMap) => {
           const view = new View({
             container: ReactDOM.findDOMNode(this.refs.mapView),
-            map: map,
+            map: new WebMap({
+              portalItem: {
+                id: webMapId
+              }
+            }),
             padding: {right: 280}
           });
 
           // calling this initialises the legend control
           initLegend(view, mapId);
-
-          layer3.then(function(lyr) {
-            view.goTo(lyr.fullExtent);
-          });  
         }
       );
+    }
+    else {
+      esriLoader.dojoRequire(
+          ["esri/Map", isWebGLEnabled() && !isMobile() ? "esri/views/SceneView" : "esri/views/MapView", "esri/layers/MapImageLayer"],
+          (Map, View, MapImageLayer) => {
+
+            const layer1 = new MapImageLayer({
+              url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/RedlandsEmergencyVehicles/MapServer"
+            });
+
+            const layer2 = new MapImageLayer({
+              url: "https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer",
+              visible: false
+            });
+
+            const layer3 = new MapImageLayer({
+              url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Hurricanes/MapServer/'
+            });
+
+            const map = new Map({basemap: "topo", layers: [layer1, layer2, layer3]});
+
+            const view = new View({
+              container: ReactDOM.findDOMNode(this.refs.mapView),
+              map: map,
+              padding: {right: 280}
+            });
+
+            // calling this initialises the legend control
+            initLegend(view, mapId);
+
+            layer3.then(function(lyr) {
+              view.goTo(lyr.fullExtent);
+            });  
+          }
+        );
+      }      
+  }
+
+  getUrlParameter = (name) => {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location.search);
+    return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
   }
 
   componentDidMount() {  
+
+    const webmapId = this.getUrlParameter('webmap');
 
     if (!esriLoader.isLoaded()) {
       // lazy load the ArcGIS API
@@ -71,10 +88,10 @@ class MapUi extends React.Component {
           return;
         }
 
-        this.createMap();
+        this.createMap(webmapId);
       });
     } else {
-      this.createMap();
+      this.createMap(webmapId);
     }
   }
 
