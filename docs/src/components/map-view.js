@@ -89,6 +89,8 @@ class MapUi extends React.Component {
         }
 
         this.createMap(webmapId);
+      }, {
+        url: 'https://js.arcgis.com/4.3/'
       });
     } else {
       this.createMap(webmapId);

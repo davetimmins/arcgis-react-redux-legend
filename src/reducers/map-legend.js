@@ -185,11 +185,16 @@ export default createReducer(initialState, {
       isFetching: false,
       expanded: false,
       id: guid(),
-      uid: initLyr.uid
+      uid: initLyr.uid,
+      mapIndex: initLyr.__index
     }];
 
     let legends = Object.assign({}, state.legends);
     legends[payload.mapId] = legends[payload.mapId] && legends[payload.mapId].length ? legends[payload.mapId].concat(layer) : layer;
+
+    legends[payload.mapId].sort(function(a, b) {
+      return a.mapIndex - b.mapIndex;
+    });
 
     return Object.assign({}, state, {
       'legends': legends,
@@ -217,12 +222,17 @@ export default createReducer(initialState, {
       isFetching: false,
       expanded: false,
       id: guid(),
-      uid: initLyr.uid
+      uid: initLyr.uid,
+      mapIndex: initLyr.__index
     }];
 
     let legends = Object.assign({}, state.legends);
     legends[payload.mapId] = legends[payload.mapId] && legends[payload.mapId].length ? legends[payload.mapId].concat(layer) : layer;
 
+    legends[payload.mapId].sort(function(a, b) {
+      return a.mapIndex - b.mapIndex;
+    });
+    
     return Object.assign({}, state, {
       'legends': legends,
       'views': views

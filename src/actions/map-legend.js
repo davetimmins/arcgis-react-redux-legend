@@ -132,12 +132,19 @@ export const setInitialLegend = (view, mapId) => {
         dispatchScaleChange(dispatch, newScale, mapId);
       });
 
+      let i = 1;
+      
       view.map.layers.forEach((lyr) => {
+
+        lyr.__index = i;
+        i++;
 
         lyr.then(
           loadedLayer => {
 
-            if (loadedLayer.loaded && loadedLayer.allSublayers) {
+            if (loadedLayer.loaded 
+              && loadedLayer.allSublayers 
+              && loadedLayer.legendEnabled) {
 
               dispatch({
                 type: SET_INITIAL_LEGEND_MAPIMAGELAYER_DATA, 
@@ -148,7 +155,8 @@ export const setInitialLegend = (view, mapId) => {
             if (loadedLayer.loaded
               && loadedLayer.type 
               && (loadedLayer.type.toLowerCase() === 'feature' || loadedLayer.type.toLowerCase() === 'graphics')
-              && (lyr.url || lyr.source)) {
+              && (lyr.url || lyr.source)
+              && loadedLayer.legendEnabled) {
 
               dispatch({
                 type: SET_INITIAL_LEGEND_GRAPHICSLAYER_DATA, 
