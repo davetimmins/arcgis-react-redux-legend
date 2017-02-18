@@ -23,16 +23,11 @@ const updateLayers = (view, legend) => {
   legend.forEach((legendLyr) => {
   
     if (legendLyr.alreadyLoaded === true) {
-      const layerFind = view.map.layers.filter((lyr) => {
-        return lyr.title === legendLyr.layerName ||
-          lyr.id === legendLyr.layerName;
-      });
-
-      if (layerFind && layerFind.items && layerFind.items.length !== 1) {
+      const matchedLayer = view.map.layers.find((lyr) => lyr.uid === legendLyr.uid);
+        
+      if (!matchedLayer) {
         return null;
       }
-
-      const matchedLayer = layerFind.items[0];
 
       if (legendLyr.visible && legendLyr.subLayersVisible && matchedLayer.sublayers) {
         if (matchedLayer.sublayers) {
