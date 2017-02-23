@@ -145,6 +145,8 @@ export const setInitialLegend = (view, mapId) => {
           loadedLayer => {
 
             if (loadedLayer.loaded 
+              && loadedLayer.type 
+              && (['map-image'].indexOf(loadedLayer.type.toLowerCase()) > -1)
               && loadedLayer.allSublayers 
               && loadedLayer.legendEnabled) {
 
@@ -156,7 +158,7 @@ export const setInitialLegend = (view, mapId) => {
 
             if (loadedLayer.loaded
               && loadedLayer.type 
-              && (loadedLayer.type.toLowerCase() === 'feature' || loadedLayer.type.toLowerCase() === 'graphics')
+              && (['feature', 'graphics', 'scene', 'stream'].indexOf(loadedLayer.type.toLowerCase()) > -1)
               && (lyr.url || lyr.source)
               && loadedLayer.legendEnabled) {
 
