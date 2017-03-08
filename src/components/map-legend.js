@@ -94,7 +94,7 @@ class MapLegend extends React.Component {
 
     const currentScale = scales[mapId];
 
-    let marginStyle = { marginLeft: 8 };
+    let marginStyle = { marginLeft: 8, opacity: 1 };
 
     let subLayerLegendData = item.expanded && item.subLayerLegendData
       ? item.subLayerLegendData.map(this.renderSubNodeLegendData)
@@ -106,7 +106,7 @@ class MapLegend extends React.Component {
       ((item.subLayerMinScale !== 0 && item.subLayerMinScale < currentScale) ||
         (item.subLayerMaxScale !== 0 && item.subLayerMaxScale > currentScale))
     ) {
-      marginStyle.color = '#dcdcdc';
+      marginStyle.opacity = 0.5;
     }
 
     let subNodeExpander = !item.subLayerLegendData
@@ -142,7 +142,7 @@ class MapLegend extends React.Component {
   };
 
   renderNodes = item => {
-    
+
     if (!item.alreadyLoaded) {
       return null;
     }
@@ -151,7 +151,7 @@ class MapLegend extends React.Component {
 
     const currentScale = scales[mapId];
 
-    const marginStyle = { marginLeft: 4, marginTop: 8 };
+    const marginStyle = { marginLeft: 4, marginTop: 8, opacity: 1 };
     const subMarginStyle = { marginLeft: 8 };
 
     if (
@@ -163,7 +163,7 @@ class MapLegend extends React.Component {
       if (item.showLayersNotVisibleForScale === false) {
         return null;
       }
-      marginStyle.color = '#dcdcdc';
+      marginStyle.opacity = 0.4;
     }
 
     let sublayers = item.expanded && (item.legendLayers || item.hasDomNode)
