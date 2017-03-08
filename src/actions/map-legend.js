@@ -7,6 +7,8 @@ export const REQUEST_LEGEND_DATA = "map-legend/REQUEST_LEGEND_DATA";
 export const RECEIVE_LEGEND_DATA = "map-legend/RECEIVE_LEGEND_DATA";
 export const TOGGLE_LEGEND_NODE_EXPANDED = "map-legend/TOGGLE_LEGEND_NODE_EXPANDED";
 export const SET_LEGEND_DOM_DATA = "map-legend/SET_LEGEND_DOM_DATA";
+export const REVERSE_LAYER_ORDER = "map-legend/REVERSE_LAYER_ORDER";
+export const SHOW_LAYERS_NOT_VISIBLE_FOR_SCALE = "map-legend/SHOW_LAYERS_NOT_VISIBLE_FOR_SCALE";
 
 export const SET_INITIAL_LEGEND_MAPIMAGELAYER_DATA = 'map-legend/SET_INITIAL_LEGEND_MAPIMAGELAYER_DATA';
 export const SET_INITIAL_LEGEND_GRAPHICSLAYER_DATA = 'map-legend/SET_INITIAL_LEGEND_GRAPHICSLAYER_DATA';
@@ -22,6 +24,20 @@ export const toggleNodeVisible = (nodeId, mapId) => {
   return {
     type: TOGGLE_LEGEND_NODE_VISIBLE, 
     payload: { nodeId, mapId } 
+  };
+};
+
+export const reverseLayerOrder = (mapId) => {
+  return {
+    type: REVERSE_LAYER_ORDER, 
+    payload: { mapId } 
+  };
+};
+
+export const showLayersNotVisibleForScale = (mapId, show) => {
+  return {
+    type: SHOW_LAYERS_NOT_VISIBLE_FOR_SCALE, 
+    payload: { mapId, show } 
   };
 };
 

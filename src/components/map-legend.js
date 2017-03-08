@@ -142,8 +142,9 @@ class MapLegend extends React.Component {
   };
 
   renderNodes = item => {
+    
     if (!item.alreadyLoaded) {
-      return '';
+      return null;
     }
 
     const { mapId, scales, toggleNodeExpanded, toggleNodeVisible } = this.props;
@@ -153,22 +154,25 @@ class MapLegend extends React.Component {
     const marginStyle = { marginLeft: 4, marginTop: 8 };
     const subMarginStyle = { marginLeft: 8 };
 
-    let sublayers = item.expanded && (item.legendLayers || item.hasDomNode)
-      ? item.legendLayers
-          ? item.legendLayers.map(this.renderSubNodes)
-          : item.hasDomNode
-              ? <div style={subMarginStyle} dangerouslySetInnerHTML={{ __html: item.domNode }} />
-              : null
-      : null;
-
     if (
       currentScale &&
       item.scaleRestricted &&
       ((item.minScale !== 0 && item.minScale < currentScale) ||
         (item.maxScale !== 0 && item.maxScale > currentScale))
     ) {
+      if (item.showLayersNotVisibleForScale === false) {
+        return null;
+      }
       marginStyle.color = '#dcdcdc';
     }
+
+    let sublayers = item.expanded && (item.legendLayers || item.hasDomNode)
+      ? item.legendLayers
+          ? item.legendLayers.map(this.renderSubNodes)
+          : item.hasDomNode
+              ? <div style={subMarginStyle} dangerouslySetInnerHTML={{ __html: item.domNode }} />
+              : null
+      : null;   
 
     let topNodeExpander = !item.legendLayers && !item.hasDomNode
       ? null
@@ -207,7 +211,7 @@ class MapLegend extends React.Component {
     }
 
     return (
-      <div id="legend">
+      <div className="arcgis-legend">
         <div>
           <h5 style={styles.legendMap}>{mapId.split('-').join(' - ')}</h5>
         </div>
@@ -241,7 +245,8 @@ const mapDispatchToProps = dispatch => {
 };
 
 MapLegend.propTypes = {
-  mapId: React.PropTypes.string.isRequired
+  mapId: React.PropTypes.string.isRequired,
+  view: React.PropTypes.object.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MapLegend);

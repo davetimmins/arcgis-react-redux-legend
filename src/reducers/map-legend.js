@@ -1,5 +1,7 @@
 ﻿import {
   SET_CURRENT_SCALE,
+  REVERSE_LAYER_ORDER,
+  SHOW_LAYERS_NOT_VISIBLE_FOR_SCALE,
   RESET_LEGEND_IS_FETCHING,
   REQUEST_LEGEND_DATA,
   RECEIVE_LEGEND_DATA,
@@ -17,6 +19,14 @@ const s4 = () => {
 const guid = () => {
   return s4() + s4() + "-" + s4() + "-" + s4() + "-" + s4() + "-" + s4() + s4() + s4();
 };
+
+const sortLayers = (a, b) => {
+  return a.mapIndex - b.mapIndex;
+}
+
+const sortLayersBackwards = (a, b) => {
+  return b.mapIndex - a.mapIndex;
+}
 
 const updateLayers = (view, legend) => {
 
@@ -79,6 +89,38 @@ export default createReducer(initialState, {
   [RESET_LEGEND_IS_FETCHING]: (state, payload) => {
 
     return Object.assign({}, state, {'isFetching': false});
+  },
+
+  [REVERSE_LAYER_ORDER]: (state, payload) => {
+
+    let legends = Object.assign({}, state.legends);
+    let legend = legends[payload.mapId];
+
+    const legendItems = legend.map((leg, idx) => {
+      
+      leg.reverseLayerOrder = !leg.reverseLayerOrder;  
+      return leg;
+    });
+
+    legends[payload.mapId] = legendItems.sort(legendItems[0].reverseLayerOrder ? sortLayersBackwards : sortLayers);
+
+    return Object.assign({}, state, {'legends': legends});
+  },
+
+  [SHOW_LAYERS_NOT_VISIBLE_FOR_SCALE]: (state, payload) => {
+
+    let legends = Object.assign({}, state.legends);
+    let legend = legends[payload.mapId];
+
+    const legendItems = legend.map((leg, idx) => {
+      
+      leg.showLayersNotVisibleForScale = payload.show;  
+      return leg;
+    });
+
+    legends[payload.mapId] = legendItems;
+
+    return Object.assign({}, state, {'legends': legends});
   },
 
   [REQUEST_LEGEND_DATA]: (state, payload) => {
@@ -181,15 +223,15 @@ export default createReducer(initialState, {
       expanded: false,
       id: guid(),
       uid: initLyr.uid,
-      mapIndex: initLyr.__index
+      mapIndex: initLyr.__index,
+      reverseLayerOrder: false,
+      showLayersNotVisibleForScale: true
     }];
 
     let legends = Object.assign({}, state.legends);
     legends[payload.mapId] = legends[payload.mapId] && legends[payload.mapId].length ? legends[payload.mapId].concat(layer) : layer;
 
-    legends[payload.mapId].sort(function(a, b) {
-      return a.mapIndex - b.mapIndex;
-    });
+    legends[payload.mapId].sort(sortLayers);
 
     return Object.assign({}, state, {
       'legends': legends,
@@ -218,15 +260,15 @@ export default createReducer(initialState, {
       expanded: false,
       id: guid(),
       uid: initLyr.uid,
-      mapIndex: initLyr.__index
+      mapIndex: initLyr.__index,
+      reverseLayerOrder: false,
+      showLayersNotVisibleForScale: true
     }];
 
     let legends = Object.assign({}, state.legends);
     legends[payload.mapId] = legends[payload.mapId] && legends[payload.mapId].length ? legends[payload.mapId].concat(layer) : layer;
 
-    legends[payload.mapId].sort(function(a, b) {
-      return a.mapIndex - b.mapIndex;
-    });
+    legends[payload.mapId].sort(sortLayers);
     
     return Object.assign({}, state, {
       'legends': legends,

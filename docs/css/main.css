@@ -19,14 +19,24 @@ html, body {
         width: 100%;
     }
 
-#legend {
-    height: calc(100% - 60px);
+.arcgis-legend {
+    height: calc(100% - 110px);
     overflow-y: auto;
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    background-color: whitesmoke;
+    padding: 0 12px 6px 12px;
+    min-width: 280px;
+    z-index: 100;
+}
+
+#options {
     position: absolute;
     top: 20px;
     right: 20px;
     background-color: whitesmoke;
-    padding: 0 12px 6px 12px;
+    padding: 6px 12px;
     min-width: 280px;
     z-index: 100;
 }

@@ -2,11 +2,17 @@ import React from "react";
 import ReactDOM from "react-dom";
 import {connect} from "react-redux";
 import * as esriLoader from "esri-loader";
-import {MapLegend, setInitialLegend} from "../../../src/";
+import {MapLegend, setInitialLegend, reverseLayerOrder, showLayersNotVisibleForScale} from "../../../src/";
 import isWebGLEnabled from 'is-webgl-enabled';
 import isMobile from 'is-mobile';
 
 class MapUi extends React.Component {
+
+  initialState = {
+    reverseOrder: false,
+    showLayers: true
+  }
+  state = this.initialState;
 
   createMap = (webMapId) => {
 
@@ -98,11 +104,31 @@ class MapUi extends React.Component {
   }
 
   render() {
-    const {mapId} = this.props;
+    const {mapId, reverseLayerOrder, showLayersNotVisibleForScale} = this.props;
+    const {reverseOrder, showLayers} = this.state;
 
     return (
       <div style={{width: "100%", height: "100%"}} ref="mapView">
         <MapLegend style={{width: "30%", height: "100%"}} mapId={mapId} /> 
+        <div id='options'>
+          <label>
+            <input 
+              type="checkbox" 
+              checked={reverseOrder} 
+              onClick={() => { reverseLayerOrder(mapId); this.setState({reverseOrder: !reverseOrder}); }} 
+            />
+            Reverse order
+          </label>
+          <br />
+          <label>
+            <input 
+              type="checkbox" 
+              checked={showLayers} 
+              onClick={() => { showLayersNotVisibleForScale(mapId, !showLayers); this.setState({showLayers: !showLayers}); }} 
+            />
+            Show layers not visible for scale
+          </label>          
+        </div> 
       </div>   
     );
   }
@@ -112,6 +138,12 @@ const mapDispatchToProps = dispatch => {
   return {
     initLegend: (view, mapId) => {
       dispatch(setInitialLegend(view, mapId));
+    },
+    reverseLayerOrder: (mapId) => {
+      dispatch(reverseLayerOrder(mapId));
+    },
+    showLayersNotVisibleForScale: (mapId, show) => {
+      dispatch(showLayersNotVisibleForScale(mapId, show));
     }
   };
 };
