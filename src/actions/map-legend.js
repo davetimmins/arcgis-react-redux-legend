@@ -158,7 +158,7 @@ export const setInitialLegend = (view, mapId) => {
 
             if (loadedLayer.loaded
               && loadedLayer.type 
-              && (['feature', 'graphics', 'scene', 'stream'].indexOf(loadedLayer.type.toLowerCase()) > -1)
+              && (['csv', 'feature', 'graphics', 'scene', 'stream'].indexOf(loadedLayer.type.toLowerCase()) > -1)
               && (lyr.url || lyr.source)
               && loadedLayer.legendEnabled) {
 
