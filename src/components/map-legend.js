@@ -321,8 +321,7 @@ const mapDispatchToProps = dispatch => {
 };
 
 MapLegend.propTypes = {
-  mapId: React.PropTypes.string.isRequired,
-  view: React.PropTypes.object.isRequired
+  mapId: React.PropTypes.string.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MapLegend);

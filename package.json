@@ -1,6 +1,6 @@
 {
   "name": "arcgis-react-redux-legend",
-  "version": "0.20.0",
+  "version": "0.20.1",
   "description": "Combined legend and layer list control for the Esri JS API V4. Uses React and Redux.",
   "author": "Dave Timmins <dwtimmins@outlook.com>",
   "license": "MIT",
