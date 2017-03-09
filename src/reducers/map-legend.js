@@ -1,5 +1,6 @@
 ﻿import {
   SET_CURRENT_SCALE,
+  TOGGLE_SHOW_SETTINGS,
   REVERSE_LAYER_ORDER,
   SHOW_LAYERS_NOT_VISIBLE_FOR_SCALE,
   RESET_LEGEND_IS_FETCHING,
@@ -63,7 +64,8 @@ const initialState = {
   isFetching: false,
   legends: {},
   views: {},
-  scales: {}
+  scales: {},
+  options: {}
 };
 
 const createReducer = (initialState, reducerMap) => {
@@ -91,36 +93,36 @@ export default createReducer(initialState, {
     return Object.assign({}, state, {'isFetching': false});
   },
 
+  [TOGGLE_SHOW_SETTINGS]: (state, payload) => {
+
+    let options = Object.assign({}, state.options);
+    options[payload.mapId].showSettings = !options[payload.mapId].showSettings;
+
+    return Object.assign({}, state, {'options': options});
+  },
+
   [REVERSE_LAYER_ORDER]: (state, payload) => {
 
     let legends = Object.assign({}, state.legends);
     let legend = legends[payload.mapId];
 
-    const legendItems = legend.map((leg, idx) => {
-      
-      leg.reverseLayerOrder = !leg.reverseLayerOrder;  
-      return leg;
+    let options = Object.assign({}, state.options);
+    options[payload.mapId].reverseLayerOrder = !options[payload.mapId].reverseLayerOrder; 
+    
+    legends[payload.mapId] = legend.sort(options[payload.mapId].reverseLayerOrder ? sortLayersBackwards : sortLayers);
+
+    return Object.assign({}, state, {
+      'legends': legends,
+      'options' : options
     });
-
-    legends[payload.mapId] = legendItems.sort(legendItems[0].reverseLayerOrder ? sortLayersBackwards : sortLayers);
-
-    return Object.assign({}, state, {'legends': legends});
   },
 
   [SHOW_LAYERS_NOT_VISIBLE_FOR_SCALE]: (state, payload) => {
 
-    let legends = Object.assign({}, state.legends);
-    let legend = legends[payload.mapId];
+    let options = Object.assign({}, state.options);
+    options[payload.mapId].showLayersNotVisibleForScale = payload.show;
 
-    const legendItems = legend.map((leg, idx) => {
-      
-      leg.showLayersNotVisibleForScale = payload.show;  
-      return leg;
-    });
-
-    legends[payload.mapId] = legendItems;
-
-    return Object.assign({}, state, {'legends': legends});
+    return Object.assign({}, state, {'options': options});
   },
 
   [REQUEST_LEGEND_DATA]: (state, payload) => {
@@ -233,8 +235,16 @@ export default createReducer(initialState, {
 
     legends[payload.mapId].sort(sortLayers);
 
+    let options = Object.assign({}, state.options);
+    options[payload.mapId] = {
+      reverseLayerOrder: false,
+      showLayersNotVisibleForScale: true,
+      showSettings: false
+    };
+    
     return Object.assign({}, state, {
       'legends': legends,
+      'options': options,
       'views': views
     });
   },

@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import { connect } from 'react-redux';
-import { fetchLegend, toggleNodeExpanded, toggleNodeVisible } from '../actions/map-legend';
+import { fetchLegend, toggleNodeExpanded, toggleNodeVisible, toggleShowSettings, reverseLayerOrder, showLayersNotVisibleForScale } from '../actions/map-legend';
 
 const styles = {
   clickLegendNode: {
@@ -13,13 +13,43 @@ const styles = {
     marginTop: 8,
     marginBottom: 0
   },
-  legendMap: {
+  title: {
     paddingTop: 10,
-    paddingRight: 6,
+    paddingRight: 12,
     paddingBottom: 10,
-    paddingLeft: 6,
+    paddingLeft: 12,
     backgroundColor: '#ebebeb',
-    fontWeight: 'bold'
+    margin: 0
+  },
+  settings: {
+    opacity: 0.5,
+    float: 'right',
+    cursor: 'pointer',
+    position: 'absolute',
+    right: 10,
+    top: 10
+  }, 
+  settingsOn: {
+    opacity: 1,
+    float: 'right',
+    cursor: 'pointer',
+    position: 'absolute',
+    right: 10,
+    top: 10
+  },  
+  settingsPanel: {
+    position: 'absolute',
+    top: 30,
+    right: 8,
+    backgroundColor: 'whitesmoke',
+    zIndex: 101,
+    width: '90%',
+    border: 'solid 1px rgba(0,0,0,0.2)'
+  },  
+  legendPadding: {
+    paddingRight: 12,
+    paddingBottom: 10,
+    paddingLeft: 12
   },
   legendCheckbox: {
     cursor: 'pointer',
@@ -147,7 +177,7 @@ class MapLegend extends React.Component {
       return null;
     }
 
-    const { mapId, scales, toggleNodeExpanded, toggleNodeVisible } = this.props;
+    const { mapId, options, scales, toggleNodeExpanded, toggleNodeVisible } = this.props;
 
     const currentScale = scales[mapId];
 
@@ -160,7 +190,7 @@ class MapLegend extends React.Component {
       ((item.minScale !== 0 && item.minScale < currentScale) ||
         (item.maxScale !== 0 && item.maxScale > currentScale))
     ) {
-      if (item.showLayersNotVisibleForScale === false) {
+      if (options[mapId].showLayersNotVisibleForScale === false) {
         return null;
       }
       marginStyle.opacity = 0.4;
@@ -203,19 +233,55 @@ class MapLegend extends React.Component {
   };
 
   render() {
-    const { legends, mapId } = this.props;
+    const { legends, options, mapId, reverseLayerOrder, showLayersNotVisibleForScale, toggleShowSettings } = this.props;
     const legend = legends[mapId];
 
     if (!legend) {
       return null;
     }
 
+    const option = options[mapId];
+
     return (
       <div className="arcgis-legend">
         <div>
-          <h5 style={styles.legendMap}>{mapId.split('-').join(' - ')}</h5>
+          <h5 style={styles.title}>{mapId.split('-').join(' - ')}</h5>          
+          <span title='Legend settings' style={option.showSettings ? styles.settingsOn : styles.settings} className="esri-icon-settings" onClick={() => toggleShowSettings(mapId)} />
+          {
+            option.showSettings
+            ? <div style={styles.settingsPanel}>
+                <h5 style={styles.title}>Legend options</h5>
+                <div style={styles.legendPadding}>
+                  <div style={styles.inlineBlockDisplay}>
+                    <span
+                      style={styles.legendCheckboxSelected}
+                      onClick={() => reverseLayerOrder(mapId)}
+                      className={option.reverseLayerOrder ? 'esri-icon-checkbox-checked' : 'esri-icon-checkbox-unchecked'}
+                    />
+                    <label
+                      style={styles.legendCheckboxLabel}
+                      onClick={() => reverseLayerOrder(mapId)}>
+                      Reverse order
+                    </label>
+                  </div>
+                  <div style={styles.inlineBlockDisplay}>
+                    <span
+                      style={styles.legendCheckboxSelected}
+                      onClick={() => showLayersNotVisibleForScale(mapId, !option.showLayersNotVisibleForScale)}
+                      className={option.showLayersNotVisibleForScale ? 'esri-icon-checkbox-checked' : 'esri-icon-checkbox-unchecked'}
+                    />
+                    <label
+                      style={styles.legendCheckboxLabel}
+                      onClick={() => showLayersNotVisibleForScale(mapId, !option.showLayersNotVisibleForScale)}>
+                      Show layers not visible for current scale
+                    </label>
+                  </div>
+                </div>
+              </div> 
+            :null
+          }          
         </div>
-        <div>
+        <div style={styles.legendPadding}>
           {legend.map(this.renderNodes)}
         </div>
       </div>
@@ -226,6 +292,7 @@ class MapLegend extends React.Component {
 const mapStateToProps = state => {
   return {
     legends: state.mapLegendConfig.legends,
+    options: state.mapLegendConfig.options,
     scales: state.mapLegendConfig.scales
   };
 };
@@ -240,6 +307,15 @@ const mapDispatchToProps = dispatch => {
     },
     toggleNodeVisible: (id, mapId) => {
       dispatch(toggleNodeVisible(id, mapId));
+    },
+    toggleShowSettings: (mapId) => {
+      dispatch(toggleShowSettings(mapId));
+    },
+    reverseLayerOrder: (mapId) => {
+      dispatch(reverseLayerOrder(mapId));
+    },
+    showLayersNotVisibleForScale: (mapId, show) => {
+      dispatch(showLayersNotVisibleForScale(mapId, show));
     }
   };
 };
