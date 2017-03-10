@@ -245,10 +245,14 @@ class MapLegend extends React.Component {
     return (
       <div className="arcgis-legend">
         <div>
-          <h5 style={styles.title}>{mapId.split('-').join(' - ')}</h5>          
-          <span title='Legend settings' style={option.showSettings ? styles.settingsOn : styles.settings} className="esri-icon-settings" onClick={() => toggleShowSettings(mapId)} />
+          <h5 style={styles.title}>{mapId.split('-').join(' - ')}</h5>      
           {
-            option.showSettings
+            option    
+            ? <span title='Legend settings' style={option.showSettings ? styles.settingsOn : styles.settings} className="esri-icon-settings" onClick={() => toggleShowSettings(mapId)} />
+            : null
+          }
+          {
+            option && option.showSettings
             ? <div style={styles.settingsPanel}>
                 <h5 style={styles.title}>Legend options</h5>
                 <div style={styles.legendPadding}>

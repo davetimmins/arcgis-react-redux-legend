@@ -10,7 +10,8 @@
   TOGGLE_LEGEND_NODE_VISIBLE,
   SET_LEGEND_DOM_DATA,
   SET_INITIAL_LEGEND_MAPIMAGELAYER_DATA,
-  SET_INITIAL_LEGEND_GRAPHICSLAYER_DATA
+  SET_INITIAL_LEGEND_GRAPHICSLAYER_DATA,
+  INIT_MAP_OPTIONS
 } from "../actions/map-legend";
 
 const s4 = () => {
@@ -194,6 +195,18 @@ export default createReducer(initialState, {
     });
   },
 
+  [INIT_MAP_OPTIONS]: (state, payload) => {
+
+    let options = Object.assign({}, state.options);
+    options[payload.mapId] = {
+      reverseLayerOrder: false,
+      showLayersNotVisibleForScale: true,
+      showSettings: false
+    };
+
+    return Object.assign({}, state, {'options': options});
+  },
+
   [SET_INITIAL_LEGEND_MAPIMAGELAYER_DATA]: (state, payload) => {
 
     let views = Object.assign({}, state.views);
@@ -234,17 +247,9 @@ export default createReducer(initialState, {
     legends[payload.mapId] = legends[payload.mapId] && legends[payload.mapId].length ? legends[payload.mapId].concat(layer) : layer;
 
     legends[payload.mapId].sort(sortLayers);
-
-    let options = Object.assign({}, state.options);
-    options[payload.mapId] = {
-      reverseLayerOrder: false,
-      showLayersNotVisibleForScale: true,
-      showSettings: false
-    };
     
     return Object.assign({}, state, {
       'legends': legends,
-      'options': options,
       'views': views
     });
   },

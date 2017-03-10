@@ -10,7 +10,7 @@ export const SET_LEGEND_DOM_DATA = "map-legend/SET_LEGEND_DOM_DATA";
 export const TOGGLE_SHOW_SETTINGS = "map-legend/TOGGLE_SHOW_SETTINGS";
 export const REVERSE_LAYER_ORDER = "map-legend/REVERSE_LAYER_ORDER";
 export const SHOW_LAYERS_NOT_VISIBLE_FOR_SCALE = "map-legend/SHOW_LAYERS_NOT_VISIBLE_FOR_SCALE";
-
+export const INIT_MAP_OPTIONS = 'map-legend/INIT_MAP_OPTIONS';
 export const SET_INITIAL_LEGEND_MAPIMAGELAYER_DATA = 'map-legend/SET_INITIAL_LEGEND_MAPIMAGELAYER_DATA';
 export const SET_INITIAL_LEGEND_GRAPHICSLAYER_DATA = 'map-legend/SET_INITIAL_LEGEND_GRAPHICSLAYER_DATA';
 
@@ -151,6 +151,11 @@ export const setInitialLegend = (view, mapId) => {
   return function(dispatch) {
 
     view.then(() => {
+
+      dispatch({
+        type: INIT_MAP_OPTIONS, 
+        payload: { mapId } 
+      });
 
       dispatchScaleChange(dispatch, view.scale, mapId);
 
