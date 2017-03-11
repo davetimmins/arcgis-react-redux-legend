@@ -11,7 +11,8 @@
   SET_LEGEND_DOM_DATA,
   SET_INITIAL_LEGEND_MAPIMAGELAYER_DATA,
   SET_INITIAL_LEGEND_GRAPHICSLAYER_DATA,
-  INIT_MAP_OPTIONS
+  INIT_MAP_OPTIONS,
+  TOGGLE_LEGEND_EXPANDED
 } from "../actions/map-legend";
 
 const s4 = () => {
@@ -97,7 +98,7 @@ export default createReducer(initialState, {
   [TOGGLE_SHOW_SETTINGS]: (state, payload) => {
 
     let options = Object.assign({}, state.options);
-    options[payload.mapId].showSettings = !options[payload.mapId].showSettings;
+    options[payload.mapId].showOptions = !options[payload.mapId].showOptions;
 
     return Object.assign({}, state, {'options': options});
   },
@@ -201,7 +202,7 @@ export default createReducer(initialState, {
     options[payload.mapId] = {
       reverseLayerOrder: false,
       showLayersNotVisibleForScale: true,
-      showSettings: false
+      showOptions: false
     };
 
     return Object.assign({}, state, {'options': options});
@@ -400,5 +401,33 @@ export default createReducer(initialState, {
     updateLayers(state.views[payload.mapId], legend);
 
     return Object.assign({}, state, {'legends': legends});
-  }
+  },
+
+  [TOGGLE_LEGEND_EXPANDED]: (state, payload) => {
+
+    let legends = Object.assign({}, state.legends);
+    let legend = legends[payload.mapId];
+
+    const legendItems = legend.map((leg, idx) => {
+        
+        leg.expanded = payload.expanded;
+        
+        if (leg.legendLayers) {
+          const legendLayers = leg.legendLayers.map((lyr) => {
+              
+              lyr.expanded = payload.expanded;              
+              return lyr;
+            }
+          );
+
+          leg.legendLayers = legendLayers;
+        }
+        return leg;
+      }
+    );
+
+    legends[payload.mapId] = legendItems;
+
+    return Object.assign({}, state, {'legends': legends});
+  },
 });

@@ -13,6 +13,14 @@ export const SHOW_LAYERS_NOT_VISIBLE_FOR_SCALE = "map-legend/SHOW_LAYERS_NOT_VIS
 export const INIT_MAP_OPTIONS = 'map-legend/INIT_MAP_OPTIONS';
 export const SET_INITIAL_LEGEND_MAPIMAGELAYER_DATA = 'map-legend/SET_INITIAL_LEGEND_MAPIMAGELAYER_DATA';
 export const SET_INITIAL_LEGEND_GRAPHICSLAYER_DATA = 'map-legend/SET_INITIAL_LEGEND_GRAPHICSLAYER_DATA';
+export const TOGGLE_LEGEND_EXPANDED = 'map-legend/TOGGLE_LEGEND_EXPANDED';
+
+export const toggleExpanded = (mapId, expanded) => {
+  return {
+    type: TOGGLE_LEGEND_EXPANDED, 
+    payload: { mapId, expanded } 
+  };
+};
 
 export const toggleNodeExpanded = (nodeId, mapId) => {
   return {

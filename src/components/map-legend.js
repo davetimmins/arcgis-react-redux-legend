@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import { connect } from 'react-redux';
-import { fetchLegend, toggleNodeExpanded, toggleNodeVisible, toggleShowSettings, reverseLayerOrder, showLayersNotVisibleForScale } from '../actions/map-legend';
+import { fetchLegend, toggleExpanded, toggleNodeExpanded, toggleNodeVisible, toggleShowSettings, reverseLayerOrder, showLayersNotVisibleForScale } from '../actions/map-legend';
 
 const styles = {
   clickLegendNode: {
@@ -23,19 +23,17 @@ const styles = {
     backgroundColor: '#ebebeb',
     margin: 0
   },
-  settings: {
-    opacity: 0.5,
+  titleControls: {
     float: 'right',
     cursor: 'pointer',
     marginRight: 12,
     marginLeft: 12
+  },
+  options: {
+    opacity: 0.5
   }, 
-  settingsOn: {
-    opacity: 1,
-    float: 'right',
-    cursor: 'pointer',
-    marginRight: 12,
-    marginLeft: 12
+  optionsOn: {
+    opacity: 1
   },  
   settingsPanel: {
     position: 'absolute',
@@ -71,7 +69,7 @@ const styles = {
   }
 };
 
-class MapLegend extends React.Component {
+class MapLegend extends React.PureComponent {
   initialise = () => {
     const { legends, mapId, fetchLegend } = this.props;
     const legend = legends[mapId];
@@ -233,7 +231,7 @@ class MapLegend extends React.Component {
   };
 
   render() {
-    const { legends, options, mapId, reverseLayerOrder, showLayersNotVisibleForScale, toggleShowSettings } = this.props;
+    const { legends, options, mapId, toggleExpanded, reverseLayerOrder, showLayersNotVisibleForScale, toggleShowSettings } = this.props;
     const legend = legends[mapId];
 
     if (!legend) {
@@ -249,12 +247,28 @@ class MapLegend extends React.Component {
             <label>{mapId.split('-').join(' - ')}</label>      
             {
               option    
-              ? <span title='Options' style={option.showSettings ? styles.settingsOn : styles.settings} className="esri-icon-settings" onClick={() => toggleShowSettings(mapId)} />
+              ? <div style={styles.titleControls}>
+                  <span 
+                    title='Expand all' 
+                    className="esri-icon-down-arrow" 
+                    style={{marginRight: 4}}
+                    onClick={() => toggleExpanded(mapId, true)} />
+                  <span 
+                    title='Collapse all' 
+                    className="esri-icon-right-triangle-arrow" 
+                    style={{ marginRight: 4}}
+                    onClick={() => toggleExpanded(mapId, false)} />
+                  <span 
+                    title='Options' 
+                    style={option.showOptions ? styles.optionsOn : styles.options} 
+                    className="esri-icon-settings" 
+                    onClick={() => toggleShowSettings(mapId)} />
+                </div>
               : null
             }
           </div>
           {
-            option && option.showSettings
+            option && option.showOptions
             ? <div style={styles.settingsPanel}>
                 <div style={styles.titleContainer}>
                   <label>Options</label>
@@ -309,6 +323,9 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchLegend: (url, mapId) => {
       dispatch(fetchLegend(url, mapId));
+    },
+    toggleExpanded: (mapId, expanded) => {
+      dispatch(toggleExpanded(mapId, expanded));
     },
     toggleNodeExpanded: (id, mapId) => {
       dispatch(toggleNodeExpanded(id, mapId));
