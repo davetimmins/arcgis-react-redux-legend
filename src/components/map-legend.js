@@ -13,9 +13,11 @@ const styles = {
     marginTop: 8,
     marginBottom: 0
   },
-  title: {
+  marginTop: {
+    marginTop: 8
+  },
+  titleContainer: {
     paddingTop: 10,
-    paddingRight: 12,
     paddingBottom: 10,
     paddingLeft: 12,
     backgroundColor: '#ebebeb',
@@ -25,17 +27,15 @@ const styles = {
     opacity: 0.5,
     float: 'right',
     cursor: 'pointer',
-    position: 'absolute',
-    right: 10,
-    top: 10
+    marginRight: 12,
+    marginLeft: 12
   }, 
   settingsOn: {
     opacity: 1,
     float: 'right',
     cursor: 'pointer',
-    position: 'absolute',
-    right: 10,
-    top: 10
+    marginRight: 12,
+    marginLeft: 12
   },  
   settingsPanel: {
     position: 'absolute',
@@ -245,18 +245,22 @@ class MapLegend extends React.Component {
     return (
       <div className="arcgis-legend">
         <div>
-          <h5 style={styles.title}>{mapId.split('-').join(' - ')}</h5>      
-          {
-            option    
-            ? <span title='Legend settings' style={option.showSettings ? styles.settingsOn : styles.settings} className="esri-icon-settings" onClick={() => toggleShowSettings(mapId)} />
-            : null
-          }
+          <div style={styles.titleContainer}>
+            <label>{mapId.split('-').join(' - ')}</label>      
+            {
+              option    
+              ? <span title='Options' style={option.showSettings ? styles.settingsOn : styles.settings} className="esri-icon-settings" onClick={() => toggleShowSettings(mapId)} />
+              : null
+            }
+          </div>
           {
             option && option.showSettings
             ? <div style={styles.settingsPanel}>
-                <h5 style={styles.title}>Legend options</h5>
+                <div style={styles.titleContainer}>
+                  <label>Options</label>
+                </div>
                 <div style={styles.legendPadding}>
-                  <div style={styles.inlineBlockDisplay}>
+                  <div style={styles.marginTop}>
                     <span
                       style={styles.legendCheckboxSelected}
                       onClick={() => reverseLayerOrder(mapId)}
@@ -268,7 +272,7 @@ class MapLegend extends React.Component {
                       Reverse order
                     </label>
                   </div>
-                  <div style={styles.inlineBlockDisplay}>
+                  <div style={styles.marginTop}>
                     <span
                       style={styles.legendCheckboxSelected}
                       onClick={() => showLayersNotVisibleForScale(mapId, !option.showLayersNotVisibleForScale)}
