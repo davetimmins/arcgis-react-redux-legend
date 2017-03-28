@@ -6,7 +6,18 @@ import {MapLegend, setInitialLegend} from "../../../src/";
 import isWebGLEnabled from 'is-webgl-enabled';
 import isMobile from 'is-mobile';
 
-class MapUi extends React.Component {
+const styles = {
+  fullSize: {
+    width: '100%',
+    height: '100%'
+  },
+  thirtyPercent: {
+    width: "30%", 
+    height: "100%"
+  }
+};
+
+class MapUi extends React.PureComponent {
 
   createMap = (webMapId) => {
 
@@ -18,7 +29,7 @@ class MapUi extends React.Component {
         ["esri/Map", isWebGLEnabled() && !isMobile() ? "esri/views/SceneView" : "esri/views/MapView", "esri/WebMap"],
         (Map, View, WebMap) => {
           const view = new View({
-            container: ReactDOM.findDOMNode(this.refs.mapView),
+            container: ReactDOM.findDOMNode(this.mapContainer),
             map: new WebMap({
               portalItem: {
                 id: webMapId
@@ -53,7 +64,7 @@ class MapUi extends React.Component {
             const map = new Map({basemap: "topo", layers: [layer1, layer2, layer3]});
 
             const view = new View({
-              container: ReactDOM.findDOMNode(this.refs.mapView),
+              container: ReactDOM.findDOMNode(this.mapContainer),
               map: map,
               padding: {right: 280}
             });
@@ -101,8 +112,8 @@ class MapUi extends React.Component {
     const {mapId} = this.props;
 
     return (
-      <div style={{width: "100%", height: "100%"}} ref="mapView">
-        <MapLegend style={{width: "30%", height: "100%"}} mapId={mapId} />         
+      <div style={styles.fullSize} ref={node => this.mapContainer = node}>
+        <MapLegend style={styles.thirtyPercent} mapId={mapId} />         
       </div>   
     );
   }
