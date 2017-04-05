@@ -1,6 +1,6 @@
 import React from "react";
+import EsriLoader from 'esri-loader-react';
 
-import EsriLoaderContainer from '../EsriLoaderContainer'
 import MapUi from "./map-view";
 
 class AppMain extends React.PureComponent {
@@ -24,7 +24,7 @@ class AppMain extends React.PureComponent {
 
     return (
       <div>
-        <EsriLoaderContainer options={options} ready={this.onEsriApiLoaded} />
+        <EsriLoader options={options} ready={this.onEsriApiLoaded} />
         {this.state.loaded ? <MapUi mapId={"Legend example"} /> : null}
       </div>
     );
