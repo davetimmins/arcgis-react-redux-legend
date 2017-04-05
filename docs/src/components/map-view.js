@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import {connect} from "react-redux";
-import * as esriLoader from "esri-loader";
+import { dojoRequire } from "esri-loader";
 import {MapLegend, setInitialLegend} from "../../../src/";
 import isWebGLEnabled from 'is-webgl-enabled';
 import isMobile from 'is-mobile';
@@ -19,13 +19,18 @@ const styles = {
 
 class MapUi extends React.PureComponent {
 
+  initialState = {
+    title: null
+  }
+  state = this.initialState;
+
   createMap = (webMapId) => {
 
     const {mapId, initLegend} = this.props;
     
     if (webMapId) {
 
-      esriLoader.dojoRequire(
+      dojoRequire(
         ["esri/Map", isWebGLEnabled() && !isMobile() ? "esri/views/SceneView" : "esri/views/MapView", "esri/WebMap"],
         (Map, View, WebMap) => {
           const view = new View({
@@ -38,13 +43,18 @@ class MapUi extends React.PureComponent {
             padding: {right: 280}
           });
 
+          view.map.portalItem.then(() => {
+
+            this.setState({title: view.map.portalItem.title});
+          });
+
           // calling this initialises the legend control
           initLegend(view, mapId);
         }
       );
     }
     else {
-      esriLoader.dojoRequire(
+      dojoRequire(
           ["esri/Map", isWebGLEnabled() && !isMobile() ? "esri/views/SceneView" : "esri/views/MapView", "esri/layers/MapImageLayer"],
           (Map, View, MapImageLayer) => {
 
@@ -91,29 +101,15 @@ class MapUi extends React.PureComponent {
 
     const webmapId = this.getUrlParameter('webmap');
 
-    if (!esriLoader.isLoaded()) {
-      // lazy load the ArcGIS API
-      esriLoader.bootstrap(err => {
-        if (err) {
-          console.error(err);
-          return;
-        }
-
-        this.createMap(webmapId);
-      }, {
-        url: 'https://js.arcgis.com/4.3/'
-      });
-    } else {
-      this.createMap(webmapId);
-    }
+    this.createMap(webmapId);
   }
 
   render() {
     const {mapId} = this.props;
-
+    const { title } = this.state;
     return (
       <div style={styles.fullSize} ref={node => this.mapContainer = node}>
-        <MapLegend style={styles.thirtyPercent} mapId={mapId} />         
+        <MapLegend style={styles.thirtyPercent} mapId={mapId} title={title} />         
       </div>   
     );
   }

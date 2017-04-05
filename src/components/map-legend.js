@@ -198,31 +198,34 @@ const renderNodes = (item, mapId, scale, toggleNodeExpanded, toggleNodeVisible, 
 };
 
 class MapLegend extends React.PureComponent {
-  initialise = () => {
-    const { legend, mapId, fetchLegend } = this.props;
+  initialise = (legend) => {
+    const { mapId, fetchLegend } = this.props;
   
     if (!legend) {
       return;
     }
 
     legend.forEach(lyr => {
-      if (lyr.url && !lyr.isFetching && !lyr.alreadyLoaded) {
+      if (!lyr.alreadyLoaded && lyr.url && !lyr.isFetching) {
         fetchLegend(lyr.url, mapId);
       }
     });
   };
 
   componentDidMount() {
-    this.initialise();
+    this.initialise(this.props.legend);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    this.initialise();
+  componentWillReceiveProps(nextProps) {
+
+    if (this.props.legend && nextProps.legend && this.props.legend.length !== nextProps.legend.length) {
+      this.initialise(nextProps.legend);
+    }
   }
 
   render() {
     const { 
-      legend, mapId, scale, 
+      legend, mapId, title, scale, 
       optionsShowOptions, optionsShowLayersNotVisibleForScale, optionsReverseLayerOrder,
       toggleExpanded, reverseLayerOrder, showLayersNotVisibleForScale, toggleShowSettings,
       toggleNodeExpanded, toggleNodeVisible } = this.props;
@@ -235,7 +238,7 @@ class MapLegend extends React.PureComponent {
       <div className="arcgis-legend">
         <div>
           <div style={styles.titleContainer}>
-            <label>{mapId.split('-').join(' - ')}</label>      
+            <label>{title ? title : mapId}</label>      
             <div style={styles.titleControls}>
               <span 
                 title='Expand all' 
@@ -338,7 +341,8 @@ const mapDispatchToProps = dispatch => {
 };
 
 MapLegend.propTypes = {
-  mapId: React.PropTypes.string.isRequired
+  mapId: React.PropTypes.string.isRequired,
+  title: React.PropTypes.string
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MapLegend);

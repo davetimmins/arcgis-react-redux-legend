@@ -43,16 +43,15 @@ const updateLayers = (view, legend) => {
       }
 
       if (legendLyr.visible && legendLyr.subLayersVisible && matchedLayer.sublayers) {
-        if (matchedLayer.sublayers) {
-          matchedLayer.sublayers = matchedLayer.sublayers.map((subLyr) => {
-            const subLayerFind = legendLyr.subLayersVisible.filter((subId) => {
-              return subLyr.id === subId;
-            });
-
-            subLyr.visible = subLayerFind && subLayerFind.length === 1;
-            return subLyr;
+        
+        matchedLayer.sublayers = matchedLayer.sublayers.map((subLyr) => {
+          const subLayerFind = legendLyr.subLayersVisible.filter((subId) => {
+            return subLyr.id === subId;
           });
-        }
+
+          subLyr.visible = subLayerFind && subLayerFind.length === 1;
+          return subLyr;
+        });        
       }
 
       if (matchedLayer.visible !== legendLyr.visible) {
