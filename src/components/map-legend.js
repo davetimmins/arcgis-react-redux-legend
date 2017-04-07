@@ -1,4 +1,5 @@
 ﻿import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchLegend, toggleExpanded, toggleNodeExpanded, toggleNodeVisible, toggleShowSettings, reverseLayerOrder, showLayersNotVisibleForScale } from '../actions/map-legend';
 
@@ -341,8 +342,8 @@ const mapDispatchToProps = dispatch => {
 };
 
 MapLegend.propTypes = {
-  mapId: React.PropTypes.string.isRequired,
-  title: React.PropTypes.string
+  mapId: PropTypes.string.isRequired,
+  title: PropTypes.string
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MapLegend);
