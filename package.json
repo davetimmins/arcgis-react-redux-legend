@@ -33,7 +33,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "esri-loader": "^0.3.0",
-    "esri-loader-react": "^0.2.1",
+    "esri-loader-react": "^0.2.2",
     "is-mobile": "^0.2.2",
     "is-webgl-enabled": "^1.0.2",
     "local-web-server": "^1.2.7",
