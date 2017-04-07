@@ -47,7 +47,7 @@
     "webpack-node-externals": "^1.5.4"
   },
   "peerDependencies": {
-    "esri-loader": "^0.2.0",
+    "esri-loader": "^0.3.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.2",
