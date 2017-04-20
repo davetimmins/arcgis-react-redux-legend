@@ -1,21 +1,19 @@
-import React from "react";
+import React from 'react';
 import EsriLoader from 'esri-loader-react';
 
-import MapUi from "./map-view";
+import MapUi from './map-view';
 
 class AppMain extends React.PureComponent {
-
   initialState = {
     loaded: false
   };
   state = this.initialState;
 
-  onEsriApiLoaded = (error) => {
-
+  onEsriApiLoaded = error => {
     if (!error) {
-      this.setState({loaded: true});
+      this.setState({ loaded: true });
     }
-  }
+  };
 
   render() {
     const options = {
@@ -25,7 +23,7 @@ class AppMain extends React.PureComponent {
     return (
       <div>
         <EsriLoader options={options} ready={this.onEsriApiLoaded} />
-        {this.state.loaded ? <MapUi mapId={"Legend example"} /> : null}
+        {this.state.loaded ? <MapUi mapId={'Legend example'} /> : null}
       </div>
     );
   }

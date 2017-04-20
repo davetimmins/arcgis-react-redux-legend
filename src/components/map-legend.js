@@ -1,7 +1,15 @@
-﻿import React from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchLegend, toggleExpanded, toggleNodeExpanded, toggleNodeVisible, toggleShowSettings, reverseLayerOrder, showLayersNotVisibleForScale } from '../actions/map-legend';
+import {
+  fetchLegend,
+  toggleExpanded,
+  toggleNodeExpanded,
+  toggleNodeVisible,
+  toggleShowSettings,
+  reverseLayerOrder,
+  showLayersNotVisibleForScale
+} from '../actions/map-legend';
 
 const styles = {
   clickLegendNode: {
@@ -32,10 +40,10 @@ const styles = {
   },
   options: {
     opacity: 0.5
-  }, 
+  },
   optionsOn: {
     opacity: 1
-  },  
+  },
   settingsPanel: {
     position: 'absolute',
     top: 30,
@@ -44,7 +52,7 @@ const styles = {
     zIndex: 101,
     width: '90%',
     border: 'solid 1px rgba(0,0,0,0.2)'
-  },  
+  },
   legendPadding: {
     paddingRight: 12,
     paddingBottom: 10,
@@ -93,7 +101,6 @@ const renderSubNodeLegendData = item => {
 };
 
 const renderSubNodes = (item, mapId, scale, toggleNodeExpanded, toggleNodeVisible) => {
-
   let marginStyle = { marginLeft: 8, opacity: 1 };
 
   let subLayerLegendData = item.expanded && item.subLayerLegendData
@@ -112,9 +119,7 @@ const renderSubNodes = (item, mapId, scale, toggleNodeExpanded, toggleNodeVisibl
   let subNodeExpander = !item.subLayerLegendData
     ? null
     : <div onClick={() => toggleNodeExpanded(item.id, mapId)} style={styles.clickLegendNode}>
-        {item.expanded
-          ? <span className="esri-icon-down" />
-          : <span className="esri-icon-right" />}
+        {item.expanded ? <span className="esri-icon-down" /> : <span className="esri-icon-right" />}
       </div>;
 
   let subNodeCheckbox = (
@@ -125,9 +130,7 @@ const renderSubNodes = (item, mapId, scale, toggleNodeExpanded, toggleNodeVisibl
           onClick={() => toggleNodeVisible(item.id, mapId)}
           className={item.visible ? 'esri-icon-visible' : 'esri-icon-non-visible'}
         />
-        <label
-          style={styles.legendCheckboxLabel}
-          onClick={() => toggleNodeVisible(item.id, mapId)}>
+        <label style={styles.legendCheckboxLabel} onClick={() => toggleNodeVisible(item.id, mapId)}>
           {item.subLayerName}
         </label>
       </div>
@@ -141,8 +144,14 @@ const renderSubNodes = (item, mapId, scale, toggleNodeExpanded, toggleNodeVisibl
   );
 };
 
-const renderNodes = (item, mapId, scale, toggleNodeExpanded, toggleNodeVisible, optionsShowLayersNotVisibleForScale) => {
-
+const renderNodes = (
+  item,
+  mapId,
+  scale,
+  toggleNodeExpanded,
+  toggleNodeVisible,
+  optionsShowLayersNotVisibleForScale
+) => {
   if (!item.alreadyLoaded) {
     return null;
   }
@@ -164,18 +173,18 @@ const renderNodes = (item, mapId, scale, toggleNodeExpanded, toggleNodeVisible, 
 
   let sublayers = item.expanded && (item.legendLayers || item.hasDomNode)
     ? item.legendLayers
-        ? item.legendLayers.map((item, index) => renderSubNodes(item, mapId, scale, toggleNodeExpanded, toggleNodeVisible))
+        ? item.legendLayers.map((item, index) =>
+            renderSubNodes(item, mapId, scale, toggleNodeExpanded, toggleNodeVisible)
+          )
         : item.hasDomNode
             ? <div style={subMarginStyle} dangerouslySetInnerHTML={{ __html: item.domNode }} />
             : null
-    : null;   
+    : null;
 
   let topNodeExpander = !item.legendLayers && !item.hasDomNode
     ? null
     : <div onClick={() => toggleNodeExpanded(item.id, mapId)} style={styles.clickLegendNode}>
-        {item.expanded
-          ? <span className="esri-icon-down" />
-          : <span className="esri-icon-right" />}
+        {item.expanded ? <span className="esri-icon-down" /> : <span className="esri-icon-right" />}
       </div>;
 
   let nodeCheckbox = (
@@ -199,9 +208,9 @@ const renderNodes = (item, mapId, scale, toggleNodeExpanded, toggleNodeVisible, 
 };
 
 class MapLegend extends React.PureComponent {
-  initialise = (legend) => {
+  initialise = legend => {
     const { mapId, fetchLegend } = this.props;
-  
+
     if (!legend) {
       return;
     }
@@ -218,19 +227,32 @@ class MapLegend extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-
-    if (this.props.legend && nextProps.legend && this.props.legend.length !== nextProps.legend.length) {
+    if (
+      this.props.legend &&
+      nextProps.legend &&
+      this.props.legend.length !== nextProps.legend.length
+    ) {
       this.initialise(nextProps.legend);
     }
   }
 
   render() {
-    const { 
-      legend, mapId, title, scale, 
-      optionsShowOptions, optionsShowLayersNotVisibleForScale, optionsReverseLayerOrder,
-      toggleExpanded, reverseLayerOrder, showLayersNotVisibleForScale, toggleShowSettings,
-      toggleNodeExpanded, toggleNodeVisible } = this.props;
-    
+    const {
+      legend,
+      mapId,
+      title,
+      scale,
+      optionsShowOptions,
+      optionsShowLayersNotVisibleForScale,
+      optionsReverseLayerOrder,
+      toggleExpanded,
+      reverseLayerOrder,
+      showLayersNotVisibleForScale,
+      toggleShowSettings,
+      toggleNodeExpanded,
+      toggleNodeVisible
+    } = this.props;
+
     if (!legend) {
       return null;
     }
@@ -239,27 +261,29 @@ class MapLegend extends React.PureComponent {
       <div className="arcgis-legend">
         <div>
           <div style={styles.titleContainer}>
-            <label>{title ? title : mapId}</label>      
+            <label>{title ? title : mapId}</label>
             <div style={styles.titleControls}>
-              <span 
-                title='Expand all' 
-                className="esri-icon-down-arrow" 
+              <span
+                title="Expand all"
+                className="esri-icon-down-arrow"
                 style={styles.iconMargin}
-                onClick={() => toggleExpanded(mapId, true)} />
-              <span 
-                title='Collapse all' 
-                className="esri-icon-right-triangle-arrow" 
+                onClick={() => toggleExpanded(mapId, true)}
+              />
+              <span
+                title="Collapse all"
+                className="esri-icon-right-triangle-arrow"
                 style={styles.iconMargin}
-                onClick={() => toggleExpanded(mapId, false)} />
-              <span 
-                title='Options' 
-                style={optionsShowOptions ? styles.optionsOn : styles.options} 
-                className="esri-icon-settings" 
-                onClick={() => toggleShowSettings(mapId)} />
-            </div>              
+                onClick={() => toggleExpanded(mapId, false)}
+              />
+              <span
+                title="Options"
+                style={optionsShowOptions ? styles.optionsOn : styles.options}
+                className="esri-icon-settings"
+                onClick={() => toggleShowSettings(mapId)}
+              />
+            </div>
           </div>
-          {
-            optionsShowOptions
+          {optionsShowOptions
             ? <div style={styles.settingsPanel}>
                 <div style={styles.titleContainer}>
                   <label>Options</label>
@@ -269,33 +293,53 @@ class MapLegend extends React.PureComponent {
                     <span
                       style={styles.legendCheckboxSelected}
                       onClick={() => reverseLayerOrder(mapId)}
-                      className={optionsReverseLayerOrder ? 'esri-icon-checkbox-checked' : 'esri-icon-checkbox-unchecked'}
+                      className={
+                        optionsReverseLayerOrder
+                          ? 'esri-icon-checkbox-checked'
+                          : 'esri-icon-checkbox-unchecked'
+                      }
                     />
                     <label
                       style={styles.legendCheckboxLabel}
-                      onClick={() => reverseLayerOrder(mapId)}>
+                      onClick={() => reverseLayerOrder(mapId)}
+                    >
                       Reverse order
                     </label>
                   </div>
                   <div style={styles.marginTop}>
                     <span
                       style={styles.legendCheckboxSelected}
-                      onClick={() => showLayersNotVisibleForScale(mapId, !optionsShowLayersNotVisibleForScale)}
-                      className={optionsShowLayersNotVisibleForScale ? 'esri-icon-checkbox-checked' : 'esri-icon-checkbox-unchecked'}
+                      onClick={() =>
+                        showLayersNotVisibleForScale(mapId, !optionsShowLayersNotVisibleForScale)}
+                      className={
+                        optionsShowLayersNotVisibleForScale
+                          ? 'esri-icon-checkbox-checked'
+                          : 'esri-icon-checkbox-unchecked'
+                      }
                     />
                     <label
                       style={styles.legendCheckboxLabel}
-                      onClick={() => showLayersNotVisibleForScale(mapId, !optionsShowLayersNotVisibleForScale)}>
+                      onClick={() =>
+                        showLayersNotVisibleForScale(mapId, !optionsShowLayersNotVisibleForScale)}
+                    >
                       Show layers not visible for current scale
                     </label>
                   </div>
                 </div>
-              </div> 
-            :null
-          }          
+              </div>
+            : null}
         </div>
         <div style={styles.legendPadding}>
-          {legend.map((item, index) => renderNodes(item, mapId, scale, toggleNodeExpanded, toggleNodeVisible, optionsShowLayersNotVisibleForScale))}
+          {legend.map((item, index) =>
+            renderNodes(
+              item,
+              mapId,
+              scale,
+              toggleNodeExpanded,
+              toggleNodeVisible,
+              optionsShowLayersNotVisibleForScale
+            )
+          )}
         </div>
       </div>
     );
@@ -329,10 +373,10 @@ const mapDispatchToProps = dispatch => {
     toggleNodeVisible: (id, mapId) => {
       dispatch(toggleNodeVisible(id, mapId));
     },
-    toggleShowSettings: (mapId) => {
+    toggleShowSettings: mapId => {
       dispatch(toggleShowSettings(mapId));
     },
-    reverseLayerOrder: (mapId) => {
+    reverseLayerOrder: mapId => {
       dispatch(reverseLayerOrder(mapId));
     },
     showLayersNotVisibleForScale: (mapId, show) => {

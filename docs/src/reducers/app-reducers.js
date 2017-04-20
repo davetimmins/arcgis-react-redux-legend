@@ -1,6 +1,6 @@
-import {combineReducers} from "redux";
-import {reducer as mapLegendConfig} from "../../../src";
+import { combineReducers } from 'redux';
+import { reducer as mapLegendConfig } from '../../../src';
 
-const AppReducers = combineReducers({mapLegendConfig});
+const AppReducers = combineReducers({ mapLegendConfig });
 
 export default AppReducers;
