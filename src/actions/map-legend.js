@@ -66,9 +66,8 @@ export const fetchLegend = (url, mapId) => {
       payload: { url, mapId }
     });
 
-    dojoRequire(['esri/request', 'esri/config'], (esriRequest, esriConfig) => {
-      esriConfig.request.corsDetection = false;
-
+    dojoRequire(['esri/request'], (esriRequest) => {
+      
       return esriRequest(url + '/legend', {
         query: { f: 'json' },
         responseType: 'json'
