@@ -1,6 +1,6 @@
 {
   "name": "arcgis-react-redux-legend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Combined legend and layer list control for the Esri JS API V4. Uses React and Redux.",
   "author": "Dave Timmins <dwtimmins@outlook.com>",
   "license": "MIT",
@@ -38,23 +38,23 @@
     "is-mobile": "^0.2.2",
     "is-webgl-enabled": "^1.0.2",
     "local-web-server": "^1.2.7",
-    "prettier": "^1.2.2",
-    "prop-types": "^15.5.8",
+    "prettier": "^1.4.2",
+    "prop-types": "^15.5.10",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
-    "react-redux": "^5.0.4",
+    "react-redux": "^5.0.5",
     "redux": "^3.6.0",
-    "redux-logger": "^3.0.1",
+    "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0",
-    "webpack": "^2.4.1",
-    "webpack-node-externals": "^1.5.4"
+    "webpack": "^2.6.1",
+    "webpack-node-externals": "^1.6.0"
   },
   "peerDependencies": {
     "esri-loader": "^1.0.0",
-    "prop-types": "^15.5.8",
+    "prop-types": "^15.5.10",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
-    "react-redux": "^5.0.4",
+    "react-redux": "^5.0.5",
     "redux": "^3.6.0",
     "redux-thunk": "^2.2.0"
   }

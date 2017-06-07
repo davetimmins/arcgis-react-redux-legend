@@ -184,13 +184,22 @@ export default createReducer(initialState, {
 
   [INIT_MAP_OPTIONS]: (state, payload) => {
     let options = Object.assign({}, state.options);
+    let legends = Object.assign({}, state.legends);
+    let views = Object.assign({}, state.views);
+
     options[payload.mapId] = {
       reverseLayerOrder: false,
       showLayersNotVisibleForScale: true,
       showOptions: false
     };
+    legends[payload.mapId] = null;
+    views[payload.mapId] = null;
 
-    return Object.assign({}, state, { options: options });
+    return Object.assign({}, state, { 
+      options: options,
+      legends: legends,
+      views: views
+    });
   },
 
   [SET_INITIAL_LEGEND_MAPIMAGELAYER_DATA]: (state, payload) => {
