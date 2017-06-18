@@ -17,7 +17,7 @@ class AppMain extends React.PureComponent {
 
   render() {
     const options = {
-      url: 'https://js.arcgis.com/4.3/'
+      url: 'https://js.arcgis.com/4.4/'
     };
 
     return (

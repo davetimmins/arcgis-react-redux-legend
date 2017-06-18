@@ -297,27 +297,24 @@ export default createReducer(initialState, {
     legends[payload.mapId] = legends[payload.mapId].map((leg, idx) => {
       if (
         payload.legendWidget &&
-        payload.legendWidget.children &&
-        payload.legendWidget.children.length > 0
+        payload.legendWidget.outerHTML
       ) {
-        let legendDOMForLayer = null;
-        for (let i = 0; i < payload.legendWidget.children.length; i++) {
-          let child = payload.legendWidget.children[i];
-          if (child.id.split('_').pop() === leg.uid) {
-            legendDOMForLayer = child;
-            break;
-          }
-        }
+        // let legendDOMForLayer = null;
+        // for (let i = 0; i < payload.legendWidget.children.length; i++) {
+        //   let child = payload.legendWidget.children[i];
+        //   if (child.id.split('_').pop() === leg.uid) {
+        //     legendDOMForLayer = child;
+        //     break;
+        //   }
+        // }
 
         if (
           leg.hasDomNode === false &&
-          legendDOMForLayer &&
-          legendDOMForLayer.children &&
-          legendDOMForLayer.children.length > 1
+          payload.legendKey.indexOf(leg.uid) > -1
         ) {
           leg.alreadyLoaded = true;
           leg.hasDomNode = true;
-          leg.domNode = legendDOMForLayer.children[1].outerHTML;
+          leg.domNode = payload.legendWidget.outerHTML;
           leg.expanded = true;
         }
       }

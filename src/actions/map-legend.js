@@ -90,10 +90,11 @@ export const fetchLegend = (url, mapId) => {
 };
 
 const hookLegend = (legend, callback) => {
-  var original = legend._buildLegendDOMForLayer;
+  
+  var original = legend._renderLegendForLayer;
 
-  legend._buildLegendDOMForLayer = (a, b) => {
-    var result = original.call(legend, a, b);
+  legend._renderLegendForLayer = (a) => {
+    var result = original.call(legend, a);
     callback(result, legend);
     return result;
   };
@@ -122,20 +123,26 @@ const dispatchScaleChange = debounce(function(dispatch, newScale, mapId) {
 }, 250);
 
 const createLayerLegend = (view, mapId, layer, dispatch) => {
-  dojoRequire(['esri/widgets/Legend'], Legend => {
-    hookLegend(new Legend({ view, layerInfos: [{ layer }] }), (legendDOMForLayer, legend) => {
-      setTimeout(() => {
-        if (legendDOMForLayer && legendDOMForLayer.widget) {
-          dispatch({
-            type: SET_LEGEND_DOM_DATA,
-            payload: { legendWidget: legendDOMForLayer.widget, mapId }
-          });
-        }
+  dojoRequire(['esri/widgets/Legend', 'esri/core/watchUtils'], (Legend, watchUtils) => {
 
-        if (legend && legend.destroy) {
-          legend.destroy();
-        }
-      }, 250);
+    watchUtils.whenTrueOnce(layer, 'loaded', function () {
+      hookLegend(
+        new Legend({ view, layerInfos: [{ layer }], container: document.createElement('div') }), 
+        (legendDOMForLayer, legend) => {
+        setTimeout(() => {
+          if (legendDOMForLayer && legendDOMForLayer.domNode && legendDOMForLayer.children && legendDOMForLayer.children.length > 0) {
+
+            dispatch({
+              type: SET_LEGEND_DOM_DATA,
+              payload: { legendKey: legendDOMForLayer.properties.key, legendWidget: legendDOMForLayer.children.find(c => c.properties.class === 'esri-legend__layer').domNode, mapId }
+            });  
+
+            if (legend && legend.destroy && legend.destroyed === false) {
+              legend.destroy();
+            }            
+          }                  
+        }, 250);
+      });
     });
   });
 };
