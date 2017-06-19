@@ -12,6 +12,8 @@ grab this repo (fork / download) then run `npm install` wait a while and then ge
 
 ### Usage
 
+**If you are using 4.3 or lower of the ArcGIS JS API then make sure you use version 1.x of this control, v2 is for the ArcGIS API v4.4 or higher.**
+
 To add to your site first make sure you have the dependencies installed, we assume you are using React, Redux and Esri Loader. For the full list refer to the [package.json](https://github.com/davetimmins/arcgis-react-redux-legend/blob/master/package.json) peerDependencies.
 
 Now add the reducer
@@ -40,8 +42,8 @@ this.props.dispatch(setInitialLegend(view, mapId));
 
 ```html
 // in your render function, use the ref to pass to the Esri JS API when creating the map and view
-<div ref="mapView">
-  <MapLegend mapId={mapId} />
+<div ref={node => (this.mapView = node)}>
+  <MapLegend mapId={mapId} title='My awesome legend' />
 </div>
 ```
 
