@@ -1,7 +1,7 @@
-node_modules/*
-bower_components/*
-.vscode/*
-*.log
-
-
-
+/coverage
+/demo/dist
+/es
+/lib
+/node_modules
+/umd
+npm-debug.log*

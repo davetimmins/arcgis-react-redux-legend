@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {render} from 'react-dom';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -13,10 +13,9 @@ const logger = createLogger({
 });
 const store = createStore(AppReducers, applyMiddleware(thunk, logger));
 
-const contentElement = document.getElementById('app-container');
-ReactDOM.render(
+render(
   <Provider store={store}>
     <AppMain />
   </Provider>,
-  contentElement
+  document.getElementById('demo')
 );

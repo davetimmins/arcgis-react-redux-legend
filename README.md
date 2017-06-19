@@ -1,3 +1,5 @@
+# arcgis-react-redux-legend
+
 # ArcGIS JS API V4 Legend
 
 [![npm](https://img.shields.io/npm/v/arcgis-react-redux-legend.svg)](https://www.npmjs.com/package/arcgis-react-redux-legend)
@@ -15,6 +17,8 @@ grab this repo (fork / download) then run `npm install` wait a while and then ge
 **If you are using 4.3 or lower of the ArcGIS JS API then make sure you use version 1.x of this control, v2 is for the ArcGIS API v4.4 or higher.**
 
 To add to your site first make sure you have the dependencies installed, we assume you are using React, Redux and Esri Loader. For the full list refer to the [package.json](https://github.com/davetimmins/arcgis-react-redux-legend/blob/master/package.json) peerDependencies.
+
+`npm install esri-loader prop-types react react-dom react-redux redux redux-thunk arcgis-react-redux-legend`
 
 Now add the reducer
 
