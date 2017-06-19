@@ -53,6 +53,6 @@ this.props.dispatch(setInitialLegend(view, mapId));
 
 `setInitialLegend` will listen for your view being ready and also watch the scale changing so that the legend scale dependency updates accordingly.
 
-For a complete example check out the source in the docs folder for [map-view](https://github.com/davetimmins/arcgis-react-redux-legend/blob/master/docs/src/components/map-view.js)
+For a complete example check out the source in the docs folder for [map-view](https://github.com/davetimmins/arcgis-react-redux-legend/blob/master/demo/src/components/map-view.js)
 
 Currently supports MapImageLayers, FeatureLayers, GraphicsLayers, StreamLayers and SceneLayers.
