@@ -10,7 +10,7 @@ Combined legend and layer list control for the ArcGIS JS API V4 that uses React 
 
 ### Run locally
 
-grab this repo (fork / download) then run `npm install` wait a while and then get running with `npm start` then go to `http://localhost:8811/docs`. You can also append a webmap query paramter to load a webmap from ArcGIS Online `http://localhost:8811/docs?webmap=ad5759bf407c4554b748356ebe1886e5`. 
+grab this repo (fork / download) then run `npm install` wait a while and then get running with `npm start` then go to `http://localhost:3000`. You can also append a webmap query paramter to load a webmap from ArcGIS Online `http://localhost:3000?webmap=ad5759bf407c4554b748356ebe1886e5`. 
 
 ### Usage
 
