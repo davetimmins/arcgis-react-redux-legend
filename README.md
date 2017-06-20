@@ -1,5 +1,3 @@
-# arcgis-react-redux-legend
-
 # ArcGIS JS API V4 Legend
 
 [![npm](https://img.shields.io/npm/v/arcgis-react-redux-legend.svg)](https://www.npmjs.com/package/arcgis-react-redux-legend)
@@ -20,11 +18,13 @@ To add to your site first make sure you have the dependencies installed, we assu
 
 `npm install esri-loader prop-types react react-dom react-redux redux redux-thunk arcgis-react-redux-legend`
 
+you can also use this with [Preact](https://preactjs.com/) by including [preact-compat](https://github.com/developit/preact-compat), see [preact-legend](https://github.com/davetimmins/preact-legend)
+
 Now add the reducer
 
 ```js
 import {combineReducers} from 'redux';
-import {reducer as mapLegendReducer} from "arcgis-react-redux-legend";
+import {reducer as mapLegendReducer} from 'arcgis-react-redux-legend';
 
 const reducer = combineReducers(
   {    
@@ -36,7 +36,7 @@ const reducer = combineReducers(
 then where you are creating your map control you need to add the MapLegend component and initialise it 
 
 ```js
-import {MapLegend,setInitialLegend} from "arcgis-react-redux-legend";
+import {MapLegend,setInitialLegend} from 'arcgis-react-redux-legend';
 
 // bootstrap the Esri API using esri-loader and create your view
 // mapId should be the unique name / id to identify the map. 
