@@ -8,7 +8,7 @@ module.exports = {
         'esri-loader': 'EsriLoader',
         'prop-types': 'PropTypes',
         react: 'React',
-        'react-dom': 'ReactDDOM',
+        'react-dom': 'ReactDOM',
         'react-redux': 'ReactRedux',
         'react-thunk': 'ReactThunk'
       }
