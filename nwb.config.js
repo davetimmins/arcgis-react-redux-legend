@@ -16,8 +16,7 @@ module.exports = {
   },
   webpack: {
     html: {
-      template: 'demo/src/index.html',
-      publicPath: 'https://davetimmins.com/arcgis-react-redux-legend/'
+      template: 'demo/src/index.html'
     }
   }
 }
