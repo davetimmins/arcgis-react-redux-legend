@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
@@ -207,7 +207,7 @@ const renderNodes = (
   );
 };
 
-class MapLegend extends React.PureComponent {
+class MapLegend extends PureComponent {
   initialise = legend => {
     const { mapId, fetchLegend } = this.props;
 

@@ -55,4 +55,4 @@ this.props.dispatch(setInitialLegend(view, mapId));
 
 For a complete example check out the source in the docs folder for [map-view](https://github.com/davetimmins/arcgis-react-redux-legend/blob/master/demo/src/components/map-view.js)
 
-Currently supports MapImageLayers, FeatureLayers, GraphicsLayers, StreamLayers and SceneLayers.
+Currently supports MapImageLayers, FeatureLayers, GraphicsLayers, StreamLayers, SceneLayers, PointCloudLayers, and MapNotesLayers.

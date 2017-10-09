@@ -41,13 +41,14 @@ const updateLayers = (view, legend) => {
       }
 
       if (legendLyr.visible && legendLyr.subLayersVisible && matchedLayer.sublayers) {
-        matchedLayer.sublayers = matchedLayer.sublayers.map(subLyr => {
+
+        matchedLayer.sublayers.forEach(subLyr => {
+
           const subLayerFind = legendLyr.subLayersVisible.filter(subId => {
             return subLyr.id === subId;
           });
 
           subLyr.visible = subLayerFind && subLayerFind.length === 1;
-          return subLyr;
         });
       }
 
@@ -299,15 +300,7 @@ export default createReducer(initialState, {
         payload.legendWidget &&
         payload.legendWidget.outerHTML
       ) {
-        // let legendDOMForLayer = null;
-        // for (let i = 0; i < payload.legendWidget.children.length; i++) {
-        //   let child = payload.legendWidget.children[i];
-        //   if (child.id.split('_').pop() === leg.uid) {
-        //     legendDOMForLayer = child;
-        //     break;
-        //   }
-        // }
-
+        
         if (
           leg.hasDomNode === false &&
           payload.legendKey.indexOf(leg.uid) > -1
