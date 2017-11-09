@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { dojoRequire } from 'esri-loader';
 import { MapLegend, setInitialLegend } from '../../../src/';
 import isWebGLEnabled from 'is-webgl-enabled';
 import isMobile from 'is-mobile';
@@ -24,7 +23,7 @@ class MapUi extends React.PureComponent {
   state = this.initialState;
 
   createMap = webMapId => {
-    const { mapId, initLegend } = this.props;
+    const { mapId, initLegend, dojoRequire } = this.props;
 
     if (webMapId) {
       dojoRequire(

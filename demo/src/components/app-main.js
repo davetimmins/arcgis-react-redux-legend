@@ -5,13 +5,13 @@ import MapUi from './map-view';
 
 class AppMain extends React.PureComponent {
   initialState = {
-    loaded: false
+    dojoRequire: null
   };
   state = this.initialState;
 
-  onEsriApiLoaded = error => {
+  onEsriApiLoaded = (error, dojoRequire) => {
     if (!error) {
-      this.setState({ loaded: true });
+      this.setState({ dojoRequire });
     }
   };
 
@@ -23,7 +23,7 @@ class AppMain extends React.PureComponent {
     return (
       <div>
         <EsriLoader options={options} ready={this.onEsriApiLoaded} />
-        {this.state.loaded ? <MapUi mapId={'Legend example'} /> : null}
+        {this.state.dojoRequire ? <MapUi mapId={'Legend example'} dojoRequire={this.state.dojoRequire} /> : null}
       </div>
     );
   }
