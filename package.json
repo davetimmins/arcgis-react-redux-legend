@@ -17,7 +17,7 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "esri-loader": "^1.x",
+    "esri-loader": "^1.5.x",
     "prop-types": "^15.x",
     "react": "^15.x || 16.x",
     "react-dom": "^15.x || 16.x",
@@ -26,8 +26,8 @@
     "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
-    "esri-loader": "^1.4.0",
-    "esri-loader-react": "^1.1.0",
+    "esri-loader": "^1.5.0",
+    "esri-loader-react": "^2.0.0-beta.2",
     "is-mobile": "^0.2.2",
     "is-webgl-enabled": "^1.0.2",
     "nwb": "^0.19.2",

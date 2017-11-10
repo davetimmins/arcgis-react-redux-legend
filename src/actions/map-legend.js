@@ -1,4 +1,4 @@
-import { dojoRequire } from 'esri-loader';
+import { loadModules } from 'esri-loader';
 
 export const SET_CURRENT_SCALE = 'map-legend/SET_CURRENT_SCALE';
 export const TOGGLE_LEGEND_NODE_VISIBLE = 'map-legend/TOGGLE_LEGEND_NODE_VISIBLE';
@@ -66,7 +66,7 @@ export const fetchLegend = (url, mapId) => {
       payload: { url, mapId }
     });
 
-    dojoRequire(['esri/request'], (esriRequest) => {
+    loadModules(['esri/request']).then(([esriRequest]) => {
       
       return esriRequest(url + '/legend', {
         query: { f: 'json' },
@@ -123,7 +123,7 @@ const dispatchScaleChange = debounce(function(dispatch, newScale, mapId) {
 }, 250);
 
 const createLayerLegend = (view, mapId, layer, dispatch) => {
-  dojoRequire(['esri/widgets/Legend', 'esri/core/watchUtils'], (Legend, watchUtils) => {
+  loadModules(['esri/widgets/Legend', 'esri/core/watchUtils']).then(([Legend, watchUtils]) => {
 
     watchUtils.whenTrueOnce(layer, 'loaded', function () {
       hookLegend(
