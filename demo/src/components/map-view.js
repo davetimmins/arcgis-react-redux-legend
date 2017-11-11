@@ -19,77 +19,89 @@ class MapUi extends React.PureComponent {
     return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
   };
 
+  loadMap = ({loadedModules: [Map, View, MapImageLayer], containerNode}) => {
+
+    const { mapId, initLegend } = this.props;
+    
+    const layer1 = new MapImageLayer({
+      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/RedlandsEmergencyVehicles/MapServer'
+    });
+
+    const layer2 = new MapImageLayer({
+      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer',
+      visible: false
+    });
+
+    const layer3 = new MapImageLayer({
+      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Hurricanes/MapServer/'
+    });
+
+    const map = new Map({
+      basemap: 'topo',
+      layers: [layer1, layer2, layer3]
+    });
+
+    const view = new View({
+      container: containerNode,
+      map: map,
+      padding: { right: 280 }
+    });
+
+    // calling this initialises the legend control
+    initLegend(view, mapId);
+
+    layer3.then(function(lyr) {
+      view.goTo(lyr.fullExtent);
+    });  
+  }
+
+  loadWebmap = ({loadedModules: [Map, MapView, WebMap], containerNode}) => {
+
+    const { mapId, initLegend } = this.props;
+
+    const view = new MapView({
+      container: containerNode,
+      map: new WebMap({
+        portalItem: {
+          id: this.getUrlParameter('webmap')
+        }
+      }),
+      padding: { right: 280 }
+    });
+
+    view.map.portalItem.then(() => {
+      this.setState({ title: view.map.portalItem.title });
+    });
+
+    // calling this initialises the legend control
+    initLegend(view, mapId); 
+  }
+
   render() {
-    const { mapId, initLegend, options } = this.props;
+    const { mapId, options } = this.props;
     const { title } = this.state;
+    
+    const webMapId = this.getUrlParameter('webmap');
+
+    const modules = webMapId
+      ? [
+          'esri/Map',
+          'esri/views/MapView',
+          'esri/WebMap',
+        ]
+      : [
+          'esri/Map',
+          isWebGLEnabled() && !isMobile() ? 'esri/views/SceneView' : 'esri/views/MapView',          
+          'esri/layers/MapImageLayer',
+        ];
+
     return (
       <EsriLoaderReact 
         mapContainerClassName='fullSize'
         options={options} 
-        modulesToLoad={[
-          'esri/Map',
-          isWebGLEnabled() && !isMobile() ? 'esri/views/SceneView' : 'esri/views/MapView',
-          'esri/WebMap',
-          'esri/layers/MapImageLayer',
-        ]}    
-        onReady={({loadedModules: [Map, View, WebMap, MapImageLayer], containerNode}) => {
-          
-          const webMapId = this.getUrlParameter('webmap');
-          
-          if (webMapId) {
-            
-            const view = new View({
-              container: containerNode,
-              map: new WebMap({
-                portalItem: {
-                  id: webMapId
-                }
-              }),
-              padding: { right: 280 }
-            });
-  
-            view.map.portalItem.then(() => {
-              this.setState({ title: view.map.portalItem.title });
-            });
-  
-            // calling this initialises the legend control
-            initLegend(view, mapId);                
-          } 
-          else {
-            
-            const layer1 = new MapImageLayer({
-              url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/RedlandsEmergencyVehicles/MapServer'
-            });
-  
-            const layer2 = new MapImageLayer({
-              url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer',
-              visible: false
-            });
-  
-            const layer3 = new MapImageLayer({
-              url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Hurricanes/MapServer/'
-            });
-  
-            const map = new Map({
-              basemap: 'topo',
-              layers: [layer1, layer2, layer3]
-            });
-  
-            const view = new View({
-              container: containerNode,
-              map: map,
-              padding: { right: 280 }
-            });
-  
-            // calling this initialises the legend control
-            initLegend(view, mapId);
-  
-            layer3.then(function(lyr) {
-              view.goTo(lyr.fullExtent);
-            });                
-          }
-        }}
-        onError={error => console.error(error)}
+        modulesToLoad={modules}    
+        onReady={webMapId ? this.loadWebmap : this.loadMap}
+        onError={(error, info) => console.error(error)}
       >
         <MapLegend className='thirtyPercent' mapId={mapId} title={title} />
       </EsriLoaderReact>
