@@ -101,7 +101,6 @@ class MapUi extends React.PureComponent {
         options={options} 
         modulesToLoad={modules}    
         onReady={webMapId ? this.loadWebmap : this.loadMap}
-        onError={(error, info) => console.error(error)}
       >
         <MapLegend className='thirtyPercent' mapId={mapId} title={title} />
       </EsriLoaderReact>

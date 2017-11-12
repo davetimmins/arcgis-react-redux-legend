@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "esri-loader": "^1.5.0",
-    "esri-loader-react": "^2.0.0-beta.4",
+    "esri-loader-react": "^2.0.0",
     "is-mobile": "^0.2.2",
     "is-webgl-enabled": "^1.0.2",
     "nwb": "^0.19.2",
