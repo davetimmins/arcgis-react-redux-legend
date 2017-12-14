@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 
-import AppMain from './components/app-main';
+import MapUi from './components/map-view';
 import AppReducers from './reducers/app-reducers';
 
 const logger = createLogger({
@@ -13,9 +13,15 @@ const logger = createLogger({
 });
 const store = createStore(AppReducers, applyMiddleware(thunk, logger));
 
+const options = {
+  url: 'https://js.arcgis.com/4.6/',
+  dojoConfig: { has: { "esri-promise-compatibility": 1 } },
+};
+const mapId = 'Legend example';
+
 render(
   <Provider store={store}>
-    <AppMain />
+    <MapUi mapId={mapId} options={options} />
   </Provider>,
   document.getElementById('demo')
 );

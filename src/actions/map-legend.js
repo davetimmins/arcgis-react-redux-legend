@@ -68,7 +68,7 @@ export const fetchLegend = (url, mapId) => {
 
     loadModules(['esri/request']).then(([esriRequest]) => {
       
-      return esriRequest(url + '/legend', {
+      return esriRequest(`${url}/legend`, {
         query: { f: 'json' },
         responseType: 'json'
       }).then(
@@ -94,21 +94,21 @@ const hookLegend = (legend, callback) => {
   var original = legend._renderLegendForLayer;
 
   legend._renderLegendForLayer = (a) => {
-    var result = original.call(legend, a);
+    let result = original.call(legend, a);
     callback(result, legend);
     return result;
   };
 };
 
 const debounce = (func, wait, immediate) => {
-  var timeout;
+  let timeout;
   return function() {
-    var context = this, args = arguments;
-    var later = function() {
+    let context = this, args = arguments;
+    let later = function() {
       timeout = null;
       if (!immediate) func.apply(context, args);
     };
-    var callNow = immediate && !timeout;
+    let callNow = immediate && !timeout;
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
@@ -149,7 +149,7 @@ const createLayerLegend = (view, mapId, layer, dispatch) => {
 
 export const setInitialLegend = (view, mapId) => {
   return function(dispatch) {
-    view.then(() => {
+    view.when(() => {
       dispatch({
         type: INIT_MAP_OPTIONS,
         payload: { mapId }
@@ -161,20 +161,19 @@ export const setInitialLegend = (view, mapId) => {
         dispatchScaleChange(dispatch, newScale, mapId);
       });
 
-      let i = 1;
+      for (var i = 0, iLen = view.map.layers.length; i < iLen; i++) {
 
-      view.map.layers.forEach(lyr => {
-        lyr.__index = i;
-        i++;
+        const lyr = view.map.layers.items[i];      
+        lyr.__index = i + 1;        
 
-        lyr.then(
+        lyr.when(
           loadedLayer => {
             if (
               loadedLayer.loaded &&
+              loadedLayer.legendEnabled &&
               loadedLayer.type &&
               ['map-image'].indexOf(loadedLayer.type.toLowerCase()) > -1 &&
-              loadedLayer.allSublayers &&
-              loadedLayer.legendEnabled
+              loadedLayer.allSublayers
             ) {
               dispatch({
                 type: SET_INITIAL_LEGEND_MAPIMAGELAYER_DATA,
@@ -184,12 +183,12 @@ export const setInitialLegend = (view, mapId) => {
 
             if (
               loadedLayer.loaded &&
+              loadedLayer.legendEnabled &&
               loadedLayer.type &&
               ['csv', 'feature', 'graphics', 'scene', 'stream', 'point-cloud', 'map-notes'].indexOf(
                 loadedLayer.type.toLowerCase()
               ) > -1 &&
-              (lyr.url || lyr.source) &&
-              loadedLayer.legendEnabled
+              (lyr.url || lyr.source)
             ) {
               dispatch({
                 type: SET_INITIAL_LEGEND_GRAPHICSLAYER_DATA,
@@ -203,7 +202,7 @@ export const setInitialLegend = (view, mapId) => {
             console.error('Failed to load a layer for use with the legend control.', error);
           }
         );
-      });
+      }
     });
   };
 };

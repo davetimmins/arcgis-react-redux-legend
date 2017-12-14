@@ -1,6 +1,6 @@
 {
   "name": "arcgis-react-redux-legend",
-  "version": "2.0.2",
+  "version": "3.0.0-beta.1",
   "description": "Combined legend and layer list control for the Esri JS API V4. Uses React and Redux.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -11,6 +11,7 @@
     "umd"
   ],
   "scripts": {
+    "prepublish": "nwb build-react-component",
     "build": "nwb build-react-component",
     "clean": "nwb clean-module && nwb clean-demo",
     "start": "nwb serve-react-demo"
@@ -26,14 +27,14 @@
     "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
-    "esri-loader": "^1.5.0",
-    "esri-loader-react": "^2.0.0",
+    "esri-loader": "^1.5.3",
+    "esri-loader-react": "^2.0.1",
     "is-mobile": "^0.2.2",
     "is-webgl-enabled": "^1.0.2",
-    "nwb": "^0.19.2",
+    "nwb": "^0.20.0",
     "prop-types": "^15.6.0",
-    "react": "^16.1.0",
-    "react-dom": "^16.1.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",

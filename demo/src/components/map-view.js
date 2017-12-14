@@ -19,7 +19,7 @@ class MapUi extends React.PureComponent {
     return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
   };
 
-  loadMap = ({loadedModules: [Map, View, MapImageLayer], containerNode}) => {
+  loadMap = ({loadedModules: [Map, View, MapImageLayer, FeatureLayer], containerNode}) => {
 
     const { mapId, initLegend } = this.props;
     
@@ -33,24 +33,26 @@ class MapUi extends React.PureComponent {
     });
 
     const layer3 = new MapImageLayer({
-      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Hurricanes/MapServer/'
+      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Hurricanes/MapServer'
     });
 
-    const map = new Map({
-      basemap: 'topo',
-      layers: [layer1, layer2, layer3]
+    const layer4 = new FeatureLayer({
+      url: 'https://services2.arcgis.com/j80Jz20at6Bi0thr/arcgis/rest/services/HawaiiLavaFlowHazardZones/FeatureServer/0'
     });
 
     const view = new View({
       container: containerNode,
-      map: map,
+      map: new Map({
+        basemap: 'topo',
+        layers: [layer1, layer2, layer3, layer4]
+      }),
       padding: { right: 280 }
     });
 
     // calling this initialises the legend control
     initLegend(view, mapId);
 
-    layer3.then(function(lyr) {
+    layer3.when(function(lyr) {
       view.goTo(lyr.fullExtent);
     });  
   }
@@ -69,8 +71,8 @@ class MapUi extends React.PureComponent {
       padding: { right: 280 }
     });
 
-    view.map.portalItem.then(() => {
-      this.setState({ title: view.map.portalItem.title });
+    view.map.portalItem.when((portalItem) => {
+      this.setState({ title: portalItem.title });
     });
 
     // calling this initialises the legend control
@@ -93,6 +95,7 @@ class MapUi extends React.PureComponent {
           'esri/Map',
           isWebGLEnabled() && !isMobile() ? 'esri/views/SceneView' : 'esri/views/MapView',          
           'esri/layers/MapImageLayer',
+          'esri/layers/FeatureLayer',
         ];
 
     return (

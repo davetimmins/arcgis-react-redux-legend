@@ -2,17 +2,17 @@
 
 [![npm](https://img.shields.io/npm/v/arcgis-react-redux-legend.svg)](https://www.npmjs.com/package/arcgis-react-redux-legend)
  
-Combined legend and layer list control for the ArcGIS JS API V4 that uses React and Redux
+Combined legend and layer list control for the ArcGIS JS API V4.6 that uses React and Redux
  
 ![legend gif](legend.gif)
 
 ### Run locally
 
-grab this repo (fork / download) then run `npm install` wait a while and then get running with `npm start` then go to `http://localhost:3000`. You can also append a webmap query paramter to load a webmap from ArcGIS Online `http://localhost:3000?webmap=ad5759bf407c4554b748356ebe1886e5`. 
+grab this repo (fork / download) then run `npm install` wait a while and then get running with `npm start` then go to `http://localhost:3000`. You can also append a webmap query paramter to load a webmap from ArcGIS Online `http://localhost:3000?webmap=8e42e164d4174da09f61fe0d3f206641`. 
 
 ### Usage
 
-**If you are using 4.3 or lower of the ArcGIS JS API then make sure you use version 1.x of this control, v2 is for the ArcGIS API v4.4 or higher.**
+**If you are using 4.3 or lower of the ArcGIS JS API then make sure you use version 1.x of this control, v2 is for the ArcGIS API v4.4 to v4.6.**
 
 To add to your site first make sure you have the dependencies installed, we assume you are using React, Redux and Esri Loader. For the full list refer to the [package.json](https://github.com/davetimmins/arcgis-react-redux-legend/blob/master/package.json) peerDependencies.
 

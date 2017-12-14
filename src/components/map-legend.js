@@ -78,22 +78,25 @@ const styles = {
   },
   iconMargin: {
     marginRight: 4
-  }
+  } 
 };
 
 const renderSubNodeLegendData = item => {
   const imageStyle = {
     width: item.imageWidth + 8,
     height: item.imageHeight,
-    backgroundImage: 'url(data:image/png;base64,' + item.image + ')',
+    backgroundImage: `url(data:image/png;base64,${item.image})`,
     backgroundRepeat: 'no-repeat',
     display: 'inline-block'
   };
 
-  const marginStyle = { marginLeft: 16, marginTop: 6 };
+  const subNodeDataStyle = {
+    marginLeft: 16, 
+    marginTop: 6,
+  };
 
   return (
-    <div key={item.id} style={marginStyle}>
+    <div key={item.id} style={subNodeDataStyle}>
       <div style={imageStyle} />
       <label style={styles.textStyle}>{item.label}</label>
     </div>
@@ -103,7 +106,7 @@ const renderSubNodeLegendData = item => {
 const renderSubNodes = (item, mapId, scale, toggleNodeExpanded, toggleNodeVisible) => {
   let marginStyle = { marginLeft: 8, opacity: 1 };
 
-  let subLayerLegendData = item.expanded && item.subLayerLegendData
+  const subLayerLegendData = item.expanded && item.subLayerLegendData
     ? item.subLayerLegendData.map(renderSubNodeLegendData)
     : null;
 
@@ -116,13 +119,13 @@ const renderSubNodes = (item, mapId, scale, toggleNodeExpanded, toggleNodeVisibl
     marginStyle.opacity = 0.5;
   }
 
-  let subNodeExpander = !item.subLayerLegendData
+  const subNodeExpander = !item.subLayerLegendData
     ? null
     : <div onClick={() => toggleNodeExpanded(item.id, mapId)} style={styles.clickLegendNode}>
         {item.expanded ? <span className="esri-icon-down" /> : <span className="esri-icon-right" />}
       </div>;
 
-  let subNodeCheckbox = (
+  const subNodeCheckbox = (
     <div style={styles.inlineBlockDisplay}>
       <div style={styles.inlineBlockDisplay}>
         <span
@@ -156,7 +159,7 @@ const renderNodes = (
     return null;
   }
 
-  const marginStyle = { marginLeft: 4, marginTop: 8, opacity: 1 };
+  let marginStyle = { marginLeft: 4, marginTop: 8, opacity: 1 };
   const subMarginStyle = { marginLeft: 8 };
 
   if (
@@ -171,7 +174,7 @@ const renderNodes = (
     marginStyle.opacity = 0.4;
   }
 
-  let sublayers = item.expanded && (item.legendLayers || item.hasDomNode)
+  const sublayers = item.expanded && (item.legendLayers || item.hasDomNode)
     ? item.legendLayers
         ? item.legendLayers.map((item, index) =>
             renderSubNodes(item, mapId, scale, toggleNodeExpanded, toggleNodeVisible)
@@ -181,13 +184,13 @@ const renderNodes = (
             : null
     : null;
 
-  let topNodeExpander = !item.legendLayers && !item.hasDomNode
+  const topNodeExpander = !item.legendLayers && !item.hasDomNode
     ? null
     : <div onClick={() => toggleNodeExpanded(item.id, mapId)} style={styles.clickLegendNode}>
         {item.expanded ? <span className="esri-icon-down" /> : <span className="esri-icon-right" />}
       </div>;
 
-  let nodeCheckbox = (
+  const nodeCheckbox = (
     <div style={styles.inlineBlockDisplay}>
       <span
         style={item.visible ? styles.legendCheckboxSelected : styles.legendCheckbox}
@@ -208,18 +211,20 @@ const renderNodes = (
 };
 
 class MapLegend extends PureComponent {
-  initialise = legend => {
+  initialise = (legend) => {
     const { mapId, fetchLegend } = this.props;
 
-    if (!legend) {
+    if (!legend || !mapId) {
       return;
     }
 
-    legend.forEach(lyr => {
+    for (var i = 0, iLen = legend.length; i < iLen; i++) {
+
+      const lyr = legend[i];
       if (!lyr.alreadyLoaded && lyr.url && !lyr.isFetching) {
         fetchLegend(lyr.url, mapId);
       }
-    });
+    }
   };
 
   componentDidMount() {
