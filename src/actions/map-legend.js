@@ -126,6 +126,7 @@ const createLayerLegend = (view, mapId, layer, dispatch) => {
   loadModules(['esri/widgets/Legend', 'esri/core/watchUtils']).then(([Legend, watchUtils]) => {
 
     watchUtils.whenTrueOnce(layer, 'loaded', function () {
+
       hookLegend(
         new Legend({ view, layerInfos: [{ layer }], container: document.createElement('div') }), 
         (legendDOMForLayer, legend) => {
@@ -166,8 +167,7 @@ export const setInitialLegend = (view, mapId) => {
         const lyr = view.map.layers.items[i];      
         lyr.__index = i + 1;        
 
-        lyr.when(
-          loadedLayer => {
+        lyr.when((loadedLayer) => {
             if (
               loadedLayer.loaded &&
               loadedLayer.legendEnabled &&
@@ -197,11 +197,10 @@ export const setInitialLegend = (view, mapId) => {
 
               createLayerLegend(view, mapId, loadedLayer, dispatch);
             }
-          },
-          error => {
-            console.error('Failed to load a layer for use with the legend control.', error);
           }
-        );
+        ).otherwise(function(error) {
+          console.error('Failed to load a layer for use with the legend control.', error)
+        });
       }
     });
   };
