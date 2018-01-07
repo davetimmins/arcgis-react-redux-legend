@@ -1,4 +1,4 @@
-import { loadModules } from 'esri-loader';
+import {loadModules} from 'esri-loader';
 
 export const SET_CURRENT_SCALE = 'map-legend/SET_CURRENT_SCALE';
 export const TOGGLE_LEGEND_NODE_VISIBLE = 'map-legend/TOGGLE_LEGEND_NODE_VISIBLE';
