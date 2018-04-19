@@ -14,8 +14,7 @@ const logger = createLogger({
 const store = createStore(AppReducers, applyMiddleware(thunk, logger));
 
 const options = {
-  url: 'https://js.arcgis.com/4.6/',
-  dojoConfig: { has: { "esri-promise-compatibility": 1 } },
+  url: 'https://js.arcgis.com/4.7/',
 };
 const mapId = 'Legend example';
 
