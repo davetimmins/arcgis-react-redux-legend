@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import EsriLoaderReact from 'esri-loader-react';
 import { MapLegend, setInitialLegend } from '../../../src/';
@@ -23,10 +22,6 @@ class MapUi extends React.PureComponent {
 
     const { mapId, initLegend } = this.props;
     
-    const layer1 = new MapImageLayer({
-      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/RedlandsEmergencyVehicles/MapServer'
-    });
-
     const layer2 = new MapImageLayer({
       url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer',
       visible: false
@@ -43,8 +38,8 @@ class MapUi extends React.PureComponent {
     const view = new View({
       container: containerNode,
       map: new Map({
-        basemap: 'topo',
-        layers: [layer1, layer2, layer3, layer4]
+        basemap: 'streets',
+        layers: [layer2, layer3, layer4]
       }),
       padding: { right: 280 }
     });
@@ -52,7 +47,7 @@ class MapUi extends React.PureComponent {
     // calling this initialises the legend control
     initLegend(view, mapId);
 
-    layer3.when(function(lyr) {
+    layer2.when(function(lyr) {
       view.goTo(lyr.fullExtent);
     });  
   }
@@ -105,11 +100,18 @@ class MapUi extends React.PureComponent {
         modulesToLoad={modules}    
         onReady={webMapId ? this.loadWebmap : this.loadMap}
       >
-        <MapLegend className='thirtyPercent' mapId={mapId} title={title} />
+        {this.props.legend ? <MapLegend className='thirtyPercent' mapId={mapId} title={title} /> : null}
       </EsriLoaderReact>
     );
   }
 }
+
+const mapStateToProps = (state, props) => {
+  const legend = state.mapLegendConfig.legends[props.mapId];
+  return {
+    legend,
+  };
+};
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -119,4 +121,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(MapUi);
+export default connect(mapStateToProps, mapDispatchToProps)(MapUi);

@@ -303,7 +303,7 @@ export default createReducer(initialState, {
         
         if (
           leg.hasDomNode === false &&
-          payload.legendKey.indexOf(leg.uid) > -1
+          payload.legendKey.indexOf(leg.layerId) > -1
         ) {
           leg.alreadyLoaded = true;
           leg.hasDomNode = true;

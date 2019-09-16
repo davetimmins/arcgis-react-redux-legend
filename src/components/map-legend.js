@@ -231,13 +231,13 @@ class MapLegend extends PureComponent {
     this.initialise(this.props.legend);
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     if (
+      prevProps.legend &&
       this.props.legend &&
-      nextProps.legend &&
-      this.props.legend.length !== nextProps.legend.length
+      this.props.legend.length !== prevProps.legend.length
     ) {
-      this.initialise(nextProps.legend);
+      this.initialise(this.props.legend);
     }
   }
 

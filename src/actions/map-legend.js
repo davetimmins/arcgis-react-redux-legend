@@ -89,17 +89,6 @@ export const fetchLegend = (url, mapId) => {
   };
 };
 
-const hookLegend = (legend, callback) => {
-  
-  var original = legend._renderLegendForLayer;
-
-  legend._renderLegendForLayer = (a) => {
-    let result = original.call(legend, a);
-    callback(result, legend);
-    return result;
-  };
-};
-
 const debounce = (func, wait, immediate) => {
   let timeout;
   return function() {
@@ -122,28 +111,103 @@ const dispatchScaleChange = debounce(function(dispatch, newScale, mapId) {
   });
 }, 250);
 
+const createLayerLegendRow = (renderer, symbolUtils) => {
+
+  if (!renderer || !symbolUtils) {
+    return null;
+  }
+
+  let row = document.createElement('tr');
+  let cellSymbol = document.createElement('td');
+  let cellLabel = document.createElement('td');
+
+  const symbol = renderer.symbol.clone();
+
+  let container = document.createElement('div');
+  symbolUtils.renderPreviewHTML(symbol, {
+    node: container
+  });
+  
+  if (renderer.description) {
+
+    cellSymbol.tooltip = renderer.description;
+    cellLabel.tooltip = renderer.description;
+  }
+
+  let label = document.createElement('span');
+  label.textContent = renderer.label;
+
+  cellSymbol.append(container);
+  cellLabel.append(label);
+
+  row.append(cellSymbol);
+  row.append(cellLabel);
+
+  return row;
+}
+
 const createLayerLegend = (view, mapId, layer, dispatch) => {
-  loadModules(['esri/widgets/Legend', 'esri/core/watchUtils']).then(([Legend, watchUtils]) => {
+  loadModules([
+    'esri/core/watchUtils', 
+    'esri/symbols/support/symbolUtils'
+  ]).then(([
+    watchUtils, 
+    symbolUtils
+  ]) => {
 
     watchUtils.whenTrueOnce(layer, 'loaded', function () {
 
-      hookLegend(
-        new Legend({ view, layerInfos: [{ layer }], container: document.createElement('div') }), 
-        (legendDOMForLayer, legend) => {
-        setTimeout(() => {
-          if (legendDOMForLayer && legendDOMForLayer.domNode && legendDOMForLayer.children && legendDOMForLayer.children.length > 0) {
+      if (!layer.renderer) {
+        return;
+      }
 
-            dispatch({
-              type: SET_LEGEND_DOM_DATA,
-              payload: { legendKey: legendDOMForLayer.properties.key, legendWidget: legendDOMForLayer.children.find(c => c.properties.class === 'esri-legend__layer').domNode, mapId }
-            });  
+      let table = document.createElement('table');
 
-            if (legend && legend.destroy && legend.destroyed === false) {
-              legend.destroy();
-            }            
-          }                  
-        }, 250);
-      });
+      switch (layer.renderer.type) {
+
+        case "simple": {
+
+          let row = createLayerLegendRow(layer.renderer, symbolUtils);
+          if (row) {
+            table.append(row);
+          }
+        }
+        break;
+
+        case "unique-value": {
+
+            layer.renderer.uniqueValueInfos.forEach((uniqueValueInfo) => {
+
+              let row = createLayerLegendRow(uniqueValueInfo, symbolUtils);  
+              if (row) {
+                table.append(row);
+              }
+            });
+          }
+        break;
+
+        case "class-breaks": {
+
+            layer.renderer.classBreakInfos.forEach((classBreakInfo) => {
+
+              let row = createLayerLegendRow(classBreakInfo, symbolUtils);  
+              if (row) {
+                table.append(row);
+              }
+            });
+          }
+        break;
+
+        case "heatmap": {
+
+        }
+        break;
+      }
+
+      dispatch({
+        type: SET_LEGEND_DOM_DATA,
+        payload: { legendKey: layer.id, legendWidget: table, mapId }
+      }); 
     });
   });
 };

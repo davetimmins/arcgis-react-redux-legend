@@ -14,7 +14,7 @@ const logger = createLogger({
 const store = createStore(AppReducers, applyMiddleware(thunk, logger));
 
 const options = {
-  url: 'https://js.arcgis.com/4.7/',
+  url: 'https://js.arcgis.com/4.12/',
 };
 const mapId = 'Legend example';
 
